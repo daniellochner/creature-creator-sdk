@@ -1,12 +1,16 @@
 
 using UnityEngine;
 
-public class MapInfo : BoundedBehaviour
+public class MapInfo : MonoBehaviour
 {
-	public override Color BoundsColor => Color.clear;
-	public override Color BoundsOutlineColor => Color.green;
-	public Texture2D MiniMapTexture;
+    public PlatformProxy[] platformProxies;
+    public UnlockableBodyPartProxy[] unlockableBodyPartProxies;
+    public UnlockablePatternProxy[] unlockablePatternProxies;
 
-	[HideInInspector]
-	public PlatformProxy[] PlatformProxies;
+    public void OnValidate()
+    {
+        platformProxies = FindObjectsOfType<PlatformProxy>(true);
+        unlockableBodyPartProxies = FindObjectsOfType<UnlockableBodyPartProxy>(true);
+        unlockablePatternProxies = FindObjectsOfType<UnlockablePatternProxy>(true);
+    }
 }
