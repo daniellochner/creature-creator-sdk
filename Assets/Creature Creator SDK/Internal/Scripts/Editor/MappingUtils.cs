@@ -56,7 +56,7 @@ public static class MappingUtils
 		mapConfig.name = mapName;
 		AssetDatabase.CreateAsset(mapConfig, mapConfigPath);
 
-		AssetDatabase.CopyAsset("Assets/Creature Creator SDK/Internal/Scenes/Template.unity", scenePath);
+		AssetDatabase.CopyAsset("Assets/Creature Creator SDK/Toolkit/Scenes/Template.unity", scenePath);
 		AssetDatabase.SaveAssets();
 		AssetDatabase.Refresh();
 
@@ -87,16 +87,13 @@ public static class MappingUtils
         {
             ThrowError(error);
         }
-
-        foreach (var root in scene.GetRootGameObjects())
+        
+        if (scene.TryGetComponent(out MapInfo info))
         {
-            foreach (var mapInfo in root.GetComponentsInChildren<MapInfo>())
-            {
-                mapInfo.OnValidate();
-            }
+            info.OnValidate();
         }
         CustomMapSecurityValidator.SanitizeAnimators(scene);
-        EditorSceneManager.SaveScene(scene, scene.path);
+        EditorSceneManager.SaveOpenScenes();
 
         string buildPath = GetBuildPath(config);
 

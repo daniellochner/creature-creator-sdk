@@ -9,8 +9,8 @@ public class MapInfo : MonoBehaviour
 
     public void OnValidate()
     {
-        platformProxies = FindObjectsOfType<PlatformProxy>(true);
-        unlockableBodyPartProxies = FindObjectsOfType<UnlockableBodyPartProxy>(true);
-        unlockablePatternProxies = FindObjectsOfType<UnlockablePatternProxy>(true);
+        platformProxies = FindObjectsOfType<PlatformProxy>();
+        unlockableBodyPartProxies = FindObjectsOfType<UnlockableBodyPartProxy>();
+        unlockablePatternProxies = FindObjectsOfType<UnlockablePatternProxy>();
     }
 }
