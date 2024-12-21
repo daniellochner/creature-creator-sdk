@@ -6,12 +6,12 @@ using Newtonsoft.Json;
 [CreateAssetMenu(menuName = "Creature Creator/Map Config", fileName = "config")]
 public class MapConfig : ScriptableObject
 {
-	public string bundleName;
-	[Header("This should match the Scene name and map folder name")]
 	public new string name;
-	public Texture2D thumbnail;
+    public string author;
+    public Texture2D thumbnail;
+    [HideInInspector] public string bundleName;
 
-	public string GetMapDirectory()
+    public string GetMapDirectory()
 	{
 		string path = AssetDatabase.GetAssetPath(this);
 		path = path.Substring(0, path.Length - "config.asset".Length);
@@ -47,6 +47,8 @@ public class MapConfig : ScriptableObject
         var json = new UnsanitizedMapConfigData();
 
         json.SDKVersion = ProjectInit.SDKVersion;
+        json.Name = name;
+        json.Author = author;
 
         return JsonConvert.SerializeObject(json, Formatting.Indented);
 	}
