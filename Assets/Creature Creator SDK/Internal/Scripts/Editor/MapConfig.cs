@@ -2,6 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 [CreateAssetMenu(menuName = "Creature Creator/Map Config", fileName = "config")]
 public class MapConfig : ScriptableObject
@@ -9,6 +10,8 @@ public class MapConfig : ScriptableObject
 	public new string name;
     public string author;
     public Texture2D thumbnail;
+    public List<string> bodyPartIds;
+    public List<string> patternIds;
     [HideInInspector] public string bundleName;
 
     public string GetMapDirectory()
@@ -44,12 +47,14 @@ public class MapConfig : ScriptableObject
 
 	public string GetJSON()
 	{
-        var json = new UnsanitizedMapConfigData();
-
-        json.SDKVersion = ProjectInit.SDKVersion;
-        json.Name = name;
-        json.Author = author;
-
-        return JsonConvert.SerializeObject(json, Formatting.Indented);
+        var config = new MapConfigData
+        {
+            SDKVersion = ProjectInit.SDKVersion,
+            Name = name,
+            Author = author,
+            BodyPartIds = bodyPartIds,
+            PatternIds = patternIds
+        };
+        return JsonConvert.SerializeObject(config, Formatting.Indented);
 	}
 }
