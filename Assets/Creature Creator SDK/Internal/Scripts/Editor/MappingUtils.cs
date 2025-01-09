@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -96,8 +97,15 @@ public static class MappingUtils
         EditorSceneManager.SaveOpenScenes();
 
         string buildPath = GetBuildPath(config);
+        string configPath = Path.Combine(buildPath, "config.json");
+        MapConfigData prevData = null;
 
-		if(Directory.Exists(buildPath))
+        if (File.Exists(configPath))
+        {
+            prevData = JsonConvert.DeserializeObject<MapConfigData>(File.ReadAllText(configPath));
+        }
+
+        if (Directory.Exists(buildPath))
 		{
 			Directory.Delete(buildPath, true);
 		}
@@ -125,12 +133,19 @@ public static class MappingUtils
 			File.Delete(file.FullName);
 		}
 
-		// the file that gets generated with the same name as the folder is the AssetBundleManifest
-		// and is apparently useful to have in some situations. It's small so there's not really
-		// a reason to delete it.
+        // the file that gets generated with the same name as the folder is the AssetBundleManifest
+        // and is apparently useful to have in some situations. It's small so there's not really
+        // a reason to delete it.
 
-		// do this last because hot reloading uses it to determine a completed build
-		File.WriteAllText(Path.Combine(buildPath, "config.json"), config.GetJSON());
+        // do this last because hot reloading uses it to determine a completed build
+
+        string nextDataJson = config.GetJSON();
+        MapConfigData nextData = JsonConvert.DeserializeObject<MapConfigData>(nextDataJson);
+        if (prevData != null)
+        {
+            nextData.ItemId = prevData.ItemId;
+        }
+        File.WriteAllText(configPath, JsonConvert.SerializeObject(nextData, Formatting.Indented));
 
 		Debug.Log($"Build completed in {DateTime.Now.Subtract(startTime).TotalSeconds.ToString("0")} seconds: {buildPath}");
 		return true;

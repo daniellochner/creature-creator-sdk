@@ -41,13 +41,13 @@ public class MappingMenus : MonoBehaviour
 		MappingUtils.BuildAndTestMap(MapConfig.GetCurrent());
 	}
 
-	//[MenuItem("Creature Creator/Upload Map to Workshop", priority = 303)]
-	//public static void UploadMap()
-	//{
-	//	MappingUtils.UploadMap(MapConfig.GetCurrent());
-	//}
+    [MenuItem("Creature Creator/Upload Map to Workshop", priority = 303)]
+    public static void UploadMap()
+    {
+        MappingUtils.UploadMap(MapConfig.GetCurrent());
+    }
 
-	[MenuItem("Creature Creator/New Map", priority = 50)]
+    [MenuItem("Creature Creator/New Map", priority = 50)]
 	public static void NewMap()
 	{
 		MappingUtils.NewMap();
