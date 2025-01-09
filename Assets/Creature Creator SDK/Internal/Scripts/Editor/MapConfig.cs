@@ -9,6 +9,7 @@ public class MapConfig : ScriptableObject
 {
 	public new string name;
     public string author;
+    public string description;
     public Texture2D thumbnail;
     public List<string> bodyPartIds;
     public List<string> patternIds;
@@ -51,6 +52,7 @@ public class MapConfig : ScriptableObject
         {
             SDKVersion = ProjectInit.SDKVersion,
             Name = name,
+            Description = description,
             Author = author,
             BodyPartIds = bodyPartIds,
             PatternIds = patternIds
