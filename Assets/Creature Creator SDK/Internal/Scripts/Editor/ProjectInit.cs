@@ -10,7 +10,7 @@ public static class ProjectInit
 	// yes, you can just change this value. but I recommend you don't.
 	// some features of the map may break and not work correctly, depending
 	// on the changes I made between versions.
-	public const string SDKVersion = "1.0.0";
+	public const string SDKVersion = "1.4.8";
 	const string requiredVersion = "2021.3.42f1";
 	const string configURL = "https://playcreature.com/sdk/config.json";
 
