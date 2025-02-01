@@ -13,9 +13,13 @@ public static class AssetBundleBuilder
 		AssetDatabase.RemoveUnusedAssetBundleNames();
 
 		BuildPipeline.BuildAssetBundles(buildPath, GetAssetBuilds(config.bundleName), BuildAssetBundleOptions.DeterministicAssetBundle, BuildTarget.StandaloneWindows64);
-	}
+		BuildPipeline.BuildAssetBundles(buildPath, GetAssetBuilds(config.bundleName), BuildAssetBundleOptions.DeterministicAssetBundle, BuildTarget.StandaloneOSX);
+        BuildPipeline.BuildAssetBundles(buildPath, GetAssetBuilds(config.bundleName), BuildAssetBundleOptions.DeterministicAssetBundle, BuildTarget.StandaloneLinux64);
+        BuildPipeline.BuildAssetBundles(buildPath, GetAssetBuilds(config.bundleName), BuildAssetBundleOptions.DeterministicAssetBundle, BuildTarget.iOS);
+        BuildPipeline.BuildAssetBundles(buildPath, GetAssetBuilds(config.bundleName), BuildAssetBundleOptions.DeterministicAssetBundle, BuildTarget.Android);
+    }
 
-	static AssetBundleBuild[] GetAssetBuilds(string bundleName)
+    static AssetBundleBuild[] GetAssetBuilds(string bundleName)
 	{
 		List<string> targetNames = new List<string>() {
 			bundleName,
