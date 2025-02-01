@@ -57,7 +57,7 @@ public static class MappingUtils
 		mapConfig.name = mapName;
 		AssetDatabase.CreateAsset(mapConfig, mapConfigPath);
 
-		AssetDatabase.CopyAsset("Assets/Creature Creator SDK/Toolkit/Scenes/Template.unity", scenePath);
+		AssetDatabase.CopyAsset("Assets/CreatureCreatorSDK/Toolkit/Scenes/Template.unity", scenePath);
 		AssetDatabase.SaveAssets();
 		AssetDatabase.Refresh();
 
