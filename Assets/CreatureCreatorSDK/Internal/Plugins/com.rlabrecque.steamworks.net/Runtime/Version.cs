@@ -6,7 +6,7 @@
 // Changes to this file will be reverted when you update Steamworks.NET
 
 #if !(UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX || STEAMWORKS_WIN || STEAMWORKS_LIN_OSX)
-#define DISABLESTEAMWORKS
+
 #endif
 
 #if !DISABLESTEAMWORKS
