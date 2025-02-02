@@ -15,26 +15,7 @@ public class MapConfigEditor : Editor
 
 		if(GUILayout.Button("Generate Thumbnail"))
 		{
-			if(ImageGenerator.TryGetThumbnail("MapThumbnailCamera", 512, 512, out Texture2D tex))
-			{
-				string thumbnailDirectory = Path.Combine(config.GetMapDirectory(), "Exclude");
-
-				if(!Directory.Exists(thumbnailDirectory))
-				{
-					Directory.CreateDirectory(thumbnailDirectory);
-				}
-
-				string thumbnailPath = Path.Combine(thumbnailDirectory, "thumb.png");
-
-				byte[] textureData = tex.EncodeToPNG();
-				File.WriteAllBytes(thumbnailPath, textureData);
-				
-				AssetDatabase.Refresh();
-
-				Texture2D savedTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(thumbnailPath);
-				config.thumbnail = savedTexture;
-				EditorUtility.SetDirty(config);
-			}
+            MappingUtils.GenerateThumbnail(config);
 		}
 	}
 }

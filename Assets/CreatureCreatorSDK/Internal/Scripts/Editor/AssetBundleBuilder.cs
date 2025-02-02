@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,18 +7,13 @@ using UnityEngine;
 
 public static class AssetBundleBuilder
 {
-	public static void BuildAssetBundles(MapConfig config, string buildPath)
+	public static void BuildAssetBundles(MapConfig config, string buildPath, BuildTarget buildTarget)
 	{
 		AssetDatabase.RemoveUnusedAssetBundleNames();
-
-		BuildPipeline.BuildAssetBundles(buildPath, GetAssetBuilds(config.bundleName), BuildAssetBundleOptions.DeterministicAssetBundle, BuildTarget.StandaloneWindows64);
-		BuildPipeline.BuildAssetBundles(buildPath, GetAssetBuilds(config.bundleName), BuildAssetBundleOptions.DeterministicAssetBundle, BuildTarget.StandaloneOSX);
-        BuildPipeline.BuildAssetBundles(buildPath, GetAssetBuilds(config.bundleName), BuildAssetBundleOptions.DeterministicAssetBundle, BuildTarget.StandaloneLinux64);
-        BuildPipeline.BuildAssetBundles(buildPath, GetAssetBuilds(config.bundleName), BuildAssetBundleOptions.DeterministicAssetBundle, BuildTarget.iOS);
-        BuildPipeline.BuildAssetBundles(buildPath, GetAssetBuilds(config.bundleName), BuildAssetBundleOptions.DeterministicAssetBundle, BuildTarget.Android);
+        BuildPipeline.BuildAssetBundles(buildPath, GetAssetBuilds(config.bundleName), BuildAssetBundleOptions.DeterministicAssetBundle, buildTarget);
     }
 
-    static AssetBundleBuild[] GetAssetBuilds(string bundleName)
+    private static AssetBundleBuild[] GetAssetBuilds(string bundleName)
 	{
 		List<string> targetNames = new List<string>() {
 			bundleName,

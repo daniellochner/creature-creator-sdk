@@ -66,6 +66,30 @@ public static class MappingUtils
 		EditorSceneManager.OpenScene(scenePath);
 	}
 
+    public static void GenerateThumbnail(MapConfig config)
+    {
+        if (ImageGenerator.TryGetThumbnail("MapThumbnailCamera", 512, 512, out Texture2D tex))
+        {
+            string thumbnailDirectory = Path.Combine(config.GetMapDirectory(), "Exclude");
+
+            if (!Directory.Exists(thumbnailDirectory))
+            {
+                Directory.CreateDirectory(thumbnailDirectory);
+            }
+
+            string thumbnailPath = Path.Combine(thumbnailDirectory, "thumb.png");
+
+            byte[] textureData = tex.EncodeToPNG();
+            File.WriteAllBytes(thumbnailPath, textureData);
+
+            AssetDatabase.Refresh();
+
+            Texture2D savedTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(thumbnailPath);
+            config.thumbnail = savedTexture;
+            EditorUtility.SetDirty(config);
+        }
+    }
+
 	public static bool BuildMap(MapConfig config)
 	{
 		if(!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
@@ -76,80 +100,110 @@ public static class MappingUtils
 		var startTime = DateTime.Now;
 		Debug.Log("Map build started");
 
-		string[] scenes = Directory.GetFiles(config.GetFullMapDirectory(), "*.unity", SearchOption.AllDirectories);
+        // Scene
+        string[] scenes = Directory.GetFiles(config.GetFullMapDirectory(), "*.unity", SearchOption.AllDirectories);
 		if(scenes.Length > 1)
 		{
 			ThrowError("More than one scene found in the map folder.");
 		}
-
 		Scene scene = SceneManager.GetActiveScene();
-
         if (!CustomMapValidator.IsSceneValid(scene, out string error))
         {
             ThrowError(error);
         }
-        
         if (scene.TryGetComponent(out MapInfo info))
         {
-            info.OnValidate();
+            info.Setup();
         }
         CustomMapSecurityValidator.SanitizeAnimators(scene);
         EditorSceneManager.SaveOpenScenes();
 
+        // Previous config
         string buildPath = GetBuildPath(config);
         string configPath = Path.Combine(buildPath, "config.json");
-        MapConfigData prevData = null;
-
+        MapConfigData prevConfigData = null;
         if (File.Exists(configPath))
         {
-            prevData = JsonConvert.DeserializeObject<MapConfigData>(File.ReadAllText(configPath));
+            prevConfigData = JsonConvert.DeserializeObject<MapConfigData>(File.ReadAllText(configPath));
         }
 
+        // Delete existing build
         if (Directory.Exists(buildPath))
 		{
 			Directory.Delete(buildPath, true);
 		}
-
 		Directory.CreateDirectory(buildPath);
 
-		string bundleBuildPath = GetBundleBuildPath(config);
+        // Build asset bundles
+        BuildBundlesForPlatform(config, RuntimePlatform.WindowsPlayer);
+        BuildBundlesForPlatform(config, RuntimePlatform.OSXPlayer);
+        BuildBundlesForPlatform(config, RuntimePlatform.LinuxPlayer);
+        BuildBundlesForPlatform(config, RuntimePlatform.IPhonePlayer);
+        BuildBundlesForPlatform(config, RuntimePlatform.Android);
 
-		Directory.CreateDirectory(bundleBuildPath);
+        // Thumbnail
+        GenerateThumbnail(config);
+        if (config.thumbnail != null)
+        {
+            string thumbnailPath = ConvertLocalPathToGlobalPath(AssetDatabase.GetAssetPath(config.thumbnail));
+            string thumbnailBuildPath = Path.Combine(buildPath, "thumb.png");
 
-		if(config.thumbnail != null)
-		{
-			string thumbnailPath = ConvertLocalPathToGlobalPath(AssetDatabase.GetAssetPath(config.thumbnail));
-			string thumbnailBuildPath = Path.Combine(buildPath, "thumb.png");
+            File.Copy(thumbnailPath, thumbnailBuildPath);
+        }
 
-			File.Copy(thumbnailPath, thumbnailBuildPath);
-		}
-
-		AssetBundleBuilder.AssignBundleNames(config);
-
-		AssetBundleBuilder.BuildAssetBundles(config, bundleBuildPath);
-
-		foreach(var file in new DirectoryInfo(bundleBuildPath).GetFiles("*.manifest"))
-		{
-			File.Delete(file.FullName);
-		}
-
-        // the file that gets generated with the same name as the folder is the AssetBundleManifest
-        // and is apparently useful to have in some situations. It's small so there's not really
-        // a reason to delete it.
-
-        // do this last because hot reloading uses it to determine a completed build
-
+        // Config
         string nextDataJson = config.GetJSON();
         MapConfigData nextData = JsonConvert.DeserializeObject<MapConfigData>(nextDataJson);
-        if (prevData != null)
+        if (prevConfigData != null)
         {
-            nextData.ItemId = prevData.ItemId;
+            nextData.ItemId = prevConfigData.ItemId;
         }
         File.WriteAllText(configPath, JsonConvert.SerializeObject(nextData, Formatting.Indented));
 
 		Debug.Log($"Build completed in {DateTime.Now.Subtract(startTime).TotalSeconds.ToString("0")} seconds: {buildPath}");
 		return true;
 	}
+
+    private static void BuildBundlesForPlatform(MapConfig config, RuntimePlatform platform)
+    {
+        string bundleBuildPath = GetBundleBuildPath(config) + $"_{platform}";
+
+        Directory.CreateDirectory(bundleBuildPath);
+
+        AssetBundleBuilder.AssignBundleNames(config);
+
+        BuildTarget buildTarget = default;
+        switch (platform)
+        {
+            case RuntimePlatform.WindowsPlayer:
+                buildTarget = BuildTarget.StandaloneWindows64;
+                break;
+
+            case RuntimePlatform.OSXPlayer:
+                buildTarget = BuildTarget.StandaloneOSX;
+                break;
+
+            case RuntimePlatform.LinuxPlayer:
+                buildTarget = BuildTarget.StandaloneLinux64;
+                break;
+
+            case RuntimePlatform.IPhonePlayer:
+                buildTarget = BuildTarget.iOS;
+                break;
+
+            case RuntimePlatform.Android:
+                buildTarget = BuildTarget.Android;
+                break;
+        }
+
+        AssetBundleBuilder.BuildAssetBundles(config, bundleBuildPath, buildTarget);
+
+        foreach (var file in new DirectoryInfo(bundleBuildPath).GetFiles("*.manifest"))
+        {
+            File.Delete(file.FullName);
+        }
+    }
+
 
 	public static void TestMap(MapConfig config)
 	{
@@ -215,7 +269,7 @@ public static class MappingUtils
 
 	public static string GetBundleBuildPath(MapConfig config)
 	{
-		return Path.Combine(GetBuildPath(config), "Map", "Bundles");
+        return Path.Combine(GetBuildPath(config), "Map", "Bundles");
 	}
 
 	public static void StartGame(string applicationPath, string mapPath, string arg)
