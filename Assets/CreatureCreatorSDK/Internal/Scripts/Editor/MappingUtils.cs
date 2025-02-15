@@ -68,7 +68,7 @@ public static class MappingUtils
 
     public static void GenerateThumbnail(MapConfig config)
     {
-        if (ImageGenerator.TryGetThumbnail("MapThumbnailCamera", 512, 512, out Texture2D tex))
+        if (ImageGenerator.TryGetThumbnail(512, 512, out Texture2D tex))
         {
             string thumbnailDirectory = Path.Combine(config.GetMapDirectory(), "Exclude");
 

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5761106593514743207}
   - component: {fileID: 5761106593514743208}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: MapThumbnailCamera
   m_TagString: EditorOnly
   m_Icon: {fileID: 0}
