@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: config
   m_EditorClassIdentifier: 
   name: Nightclub
-  author: 
-  thumbnail: {fileID: 0}
+  author: Daniel Lochner
+  description: Grooooovy
+  thumbnail: {fileID: 2800000, guid: 6264558d241a23943a9b7a56536ab321, type: 3}
   bodyPartIds: []
   patternIds: []
   bundleName: nightclub
