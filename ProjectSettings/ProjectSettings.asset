@@ -160,6 +160,7 @@ PlayerSettings:
   applicationIdentifier:
     Android: com.DefaultCompany.creaturecreatorsdk
     Standalone: com.DefaultCompany.creature-creator-sdk
+    iPhone: com.DefaultCompany.creature-creator-sdk
   buildNumber:
     Standalone: 0
     iPhone: 0

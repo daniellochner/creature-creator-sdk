@@ -117,6 +117,7 @@ public static class MappingUtils
         }
         CustomMapSecurityValidator.SanitizeAnimators(scene);
         EditorSceneManager.SaveOpenScenes();
+        GenerateThumbnail(config);
 
         // Previous config
         string buildPath = GetBuildPath(config);
@@ -142,7 +143,6 @@ public static class MappingUtils
         BuildBundlesForPlatform(config, RuntimePlatform.Android);
 
         // Thumbnail
-        GenerateThumbnail(config);
         if (config.thumbnail != null)
         {
             string thumbnailPath = ConvertLocalPathToGlobalPath(AssetDatabase.GetAssetPath(config.thumbnail));
