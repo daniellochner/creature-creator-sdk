@@ -111,10 +111,6 @@ public static class MappingUtils
         {
             ThrowError(error);
         }
-        if (scene.TryGetComponent(out MapInfo info))
-        {
-            info.Setup();
-        }
         CustomMapSecurityValidator.SanitizeAnimators(scene);
         EditorSceneManager.SaveOpenScenes();
         GenerateThumbnail(config);

@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[SelectionBase]
 public class ProxyBehaviour : MonoBehaviour
 {
     protected virtual void OnDrawGizmos()
