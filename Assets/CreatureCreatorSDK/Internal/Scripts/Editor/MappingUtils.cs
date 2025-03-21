@@ -14,7 +14,7 @@ public static class MappingUtils
 	{
 		string path = EditorUtility.OpenFilePanel("Find Creature Creator.exe", EditorSteamManager.GetInstallFolder(), "exe");
 
-		if(string.IsNullOrEmpty(path))
+		if (string.IsNullOrEmpty(path))
 			return null;
 
 		Debug.Log("Set Creature Creator.exe path to " + path);
@@ -26,15 +26,15 @@ public static class MappingUtils
 
 	public static void CheckForErrors()
 	{
-        if (CustomMapValidator.IsSceneValid(SceneManager.GetActiveScene(), out string error))
-        {
-            EditorUtility.DisplayDialog("There are no errors.", "Everything is OK!", "OK");
-        }
-        else
-        {
-            EditorUtility.DisplayDialog("Error", error, "OK");
-        }
-    }
+		if (CustomMapValidator.IsSceneValid(SceneManager.GetActiveScene(), out string error))
+		{
+			EditorUtility.DisplayDialog("There are no errors.", "Everything is OK!", "OK");
+		}
+		else
+		{
+			EditorUtility.DisplayDialog("Error", error, "OK");
+		}
+	}
 
 	public static void NewMap()
 	{
@@ -42,7 +42,7 @@ public static class MappingUtils
 
 		string mapDirectory = Path.Combine(Application.dataPath, "Maps", mapName);
 
-		if(Directory.Exists(mapDirectory))
+		if (Directory.Exists(mapDirectory))
 		{
 			ThrowError($"The map {mapName} already exists at {mapDirectory}.");
 		}
@@ -66,32 +66,37 @@ public static class MappingUtils
 		EditorSceneManager.OpenScene(scenePath);
 	}
 
-    public static void GenerateThumbnail(MapConfig config)
-    {
-        if (ImageGenerator.TryGetThumbnail(512, 512, out Texture2D tex))
-        {
-            string thumbnailDirectory = Path.Combine(config.GetMapDirectory(), "Exclude");
+	public static void GenerateThumbnail(MapConfig config)
+	{
+		if (ImageGenerator.TryGetThumbnail(512, 512, out Texture2D tex))
+		{
+			string thumbnailDirectory = Path.Combine(config.GetMapDirectory(), "Exclude");
 
-            if (!Directory.Exists(thumbnailDirectory))
-            {
-                Directory.CreateDirectory(thumbnailDirectory);
-            }
+			if (!Directory.Exists(thumbnailDirectory))
+			{
+				Directory.CreateDirectory(thumbnailDirectory);
+			}
 
-            string thumbnailPath = Path.Combine(thumbnailDirectory, "thumb.png");
+			string thumbnailPath = Path.Combine(thumbnailDirectory, "thumb.png");
 
-            byte[] textureData = tex.EncodeToPNG();
-            File.WriteAllBytes(thumbnailPath, textureData);
+			byte[] textureData = tex.EncodeToPNG();
+			File.WriteAllBytes(thumbnailPath, textureData);
 
-            AssetDatabase.Refresh();
+			AssetDatabase.Refresh();
 
-            Texture2D savedTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(thumbnailPath);
-            config.thumbnail = savedTexture;
-            EditorUtility.SetDirty(config);
-        }
-    }
+			Texture2D savedTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(thumbnailPath);
+			config.thumbnail = savedTexture;
+			EditorUtility.SetDirty(config);
+		}
+	}
 
 	public static bool BuildMap(MapConfig config)
 	{
+		if (!BuildPipeline.IsBuildTargetSupported(default, BuildTarget.StandaloneWindows64) || !BuildPipeline.IsBuildTargetSupported(default, BuildTarget.StandaloneOSX) || !BuildPipeline.IsBuildTargetSupported(default, BuildTarget.StandaloneLinux64) || !BuildPipeline.IsBuildTargetSupported(default, BuildTarget.Android) || !BuildPipeline.IsBuildTargetSupported(default, BuildTarget.iOS))
+		{
+			ThrowError($"Please ensure the following build targets are supported by installing them through Unity Hub: {BuildTarget.StandaloneWindows64}, {BuildTarget.StandaloneOSX}, {BuildTarget.StandaloneLinux64}, {BuildTarget.Android} and {BuildTarget.iOS}.");
+			return false;
+		}
 		if(!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
 		{
 			return false;
@@ -199,7 +204,6 @@ public static class MappingUtils
             File.Delete(file.FullName);
         }
     }
-
 
 	public static void TestMap(MapConfig config)
 	{
