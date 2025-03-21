@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using UnityEditor;
@@ -92,7 +93,7 @@ public static class MappingUtils
 
 	public static bool BuildMap(MapConfig config)
 	{
-		if (!BuildPipeline.IsBuildTargetSupported(default, BuildTarget.StandaloneWindows64) || !BuildPipeline.IsBuildTargetSupported(default, BuildTarget.StandaloneOSX) || !BuildPipeline.IsBuildTargetSupported(default, BuildTarget.StandaloneLinux64) || !BuildPipeline.IsBuildTargetSupported(default, BuildTarget.Android) || !BuildPipeline.IsBuildTargetSupported(default, BuildTarget.iOS))
+        if (!BuildPipeline.IsBuildTargetSupported(default, BuildTarget.StandaloneWindows64) || !BuildPipeline.IsBuildTargetSupported(default, BuildTarget.StandaloneOSX) || !BuildPipeline.IsBuildTargetSupported(default, BuildTarget.StandaloneLinux64) || !BuildPipeline.IsBuildTargetSupported(default, BuildTarget.Android) || !BuildPipeline.IsBuildTargetSupported(default, BuildTarget.iOS))
 		{
 			ThrowError($"Please ensure the following build targets are supported by installing them through Unity Hub: {BuildTarget.StandaloneWindows64}, {BuildTarget.StandaloneOSX}, {BuildTarget.StandaloneLinux64}, {BuildTarget.Android} and {BuildTarget.iOS}.");
 			return false;
@@ -209,22 +210,44 @@ public static class MappingUtils
 	{
 		string path = GetBuildPath(config);
 
-		if(!Directory.Exists(path))
+		if (!Directory.Exists(path))
 		{
 			ThrowError("You have not built this map yet. You have to build it before testing.");
+			return;
 		}
 
-		StartGame(GetApplicationPath(), path, "loadmap");
+        if (CheckFileSize(path, out double fileSizeMB, out double maxFileSizeMB))
+        {
+            ThrowError($"Your custom map is too large! ({fileSizeMB:00}MB > {maxFileSizeMB:00}MB)");
+            return;
+        }
+
+        StartGame(GetApplicationPath(), path, "loadmap");
 	}
 
 	public static void UploadMap(MapConfig config)
 	{
-		if(config.thumbnail == null)
+        string path = GetBuildPath(config);
+
+        if (!Directory.Exists(path))
+        {
+            ThrowError("You have not built this map yet. You have to build it before uploading.");
+            return;
+        }
+
+        if (config.thumbnail == null)
 		{
 			ThrowError("Missing thumbnail. Assign a thumbnail in the config file of your map.");
+			return;
 		}
 
-		StartGame(GetApplicationPath(), GetBuildPath(config), "uploadmap");
+        if (CheckFileSize(path, out double fileSizeMB, out double maxFileSizeMB))
+        {
+            ThrowError($"Your custom map is too large! ({fileSizeMB:00}MB > {maxFileSizeMB:00}MB)");
+            return;
+        }
+
+        StartGame(GetApplicationPath(), path, "uploadmap");
 	}
 
 	public static void BuildAndTestMap(MapConfig config)
@@ -296,4 +319,42 @@ public static class MappingUtils
 		EditorUtility.DisplayDialog("Error", error, "OK");
 		throw new Exception(error);
 	}
+
+
+    private static long GetDataSize(string dataPath)
+    {
+        if (File.Exists(dataPath))
+        {
+            FileInfo file = new FileInfo(dataPath);
+            return file.Length;
+        }
+
+        if (Directory.Exists(dataPath))
+        {
+            DirectoryInfo dirInfo = new DirectoryInfo(dataPath);
+
+            long size = 0;
+
+            // Add file sizes.
+            IEnumerable<FileInfo> files = dirInfo.EnumerateFiles("*.*", SearchOption.AllDirectories);
+            foreach (FileInfo file in files)
+            {
+                size += file.Length;
+            }
+
+            return size;
+        }
+
+        return 0;
+    }
+    private static bool CheckFileSize(string dataPath, out double fileSizeMB, out double maxFileSizeMB)
+    {
+        var fileSize = GetDataSize(dataPath);
+        var maxFileSize = 50000000; // 50MB
+
+        fileSizeMB = Math.Round(fileSize / 1000000f, 2);
+        maxFileSizeMB = Math.Round(maxFileSize / 1000000f, 2);
+
+        return fileSizeMB > maxFileSizeMB;
+    }
 }
