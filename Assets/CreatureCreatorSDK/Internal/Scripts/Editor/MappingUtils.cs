@@ -350,7 +350,7 @@ public static class MappingUtils
     private static bool CheckFileSize(string dataPath, out double fileSizeMB, out double maxFileSizeMB)
     {
         var fileSize = GetDataSize(dataPath);
-        var maxFileSize = 50000000; // 50MB
+        var maxFileSize = 100000000; // 100MB
 
         fileSizeMB = Math.Round(fileSize / 1000000f, 2);
         maxFileSizeMB = Math.Round(maxFileSize / 1000000f, 2);
