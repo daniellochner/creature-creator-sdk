@@ -10,14 +10,14 @@ public class PlatformProxy : ProxyBehaviour
         Model.localPosition = Vector3.zero;
     }
 
-    public static List<PlatformProxy> Platforms { get; private set; } = new ();
+    public static List<PlatformProxy> Proxies { get; private set; } = new ();
 
     private void OnEnable()
     {
-        Platforms.Add(this);
+        Proxies.Add(this);
     }
     private void OnDisable()
     {
-        Platforms.Remove(this);
+        Proxies.Remove(this);
     }
 }

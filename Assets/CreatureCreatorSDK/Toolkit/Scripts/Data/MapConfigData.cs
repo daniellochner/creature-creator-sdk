@@ -8,6 +8,7 @@ public class MapConfigData
     public string ItemId;
 
     public string Name;
+    [TextArea]
     public string Description;
     public string Author;
     public List<string> BodyPartIds;
