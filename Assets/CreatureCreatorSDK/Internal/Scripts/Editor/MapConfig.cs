@@ -9,7 +9,7 @@ public class MapConfig : ScriptableObject
 {
 	public new string name;
     public string author;
-    public string description;
+    [TextArea] public string description;
     public Texture2D thumbnail;
     public List<string> bodyPartIds;
     public List<string> patternIds;
