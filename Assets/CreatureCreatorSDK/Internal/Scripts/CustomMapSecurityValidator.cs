@@ -41,6 +41,7 @@ public static class CustomMapSecurityValidator
 		typeof(CanvasGroup),
 		typeof(TMP_Text),
 		typeof(Terrain),
+		typeof(TerrainCollider),
 		typeof(PlatformProxy),
 		typeof(SetLayer),
 		typeof(SetTag),
