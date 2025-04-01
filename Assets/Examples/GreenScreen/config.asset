@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 139106f53bb988d43ab5e115022c515e, type: 3}
+  m_Name: config
+  m_EditorClassIdentifier: 
+  name: Green Screen
+  author: Daniel Lochner
+  description: The custom green screen custom map offers a solid background for capturing
+    high-quality screenshots of your creatures.
+  thumbnail: {fileID: 2800000, guid: 6e46efc191565eb4288e48bfee242b1c, type: 3}
+  bodyPartIds: []
+  patternIds: []
+  bundleName: greenscreen
