@@ -26,7 +26,7 @@ public class MappingMenus : MonoBehaviour
 	[MenuItem("Creature Creator/Build Map _F4", priority = 300)]
 	public static void BuildMap()
 	{
-		MappingUtils.BuildMap(MapConfig.GetCurrent());
+		MappingUtils.BuildMap(MapConfig.GetCurrent(), false);
 	}
 
 	[MenuItem("Creature Creator/Test Map", priority = 301)]
@@ -44,7 +44,7 @@ public class MappingMenus : MonoBehaviour
     [MenuItem("Creature Creator/Upload Map to Workshop", priority = 303)]
     public static void UploadMap()
     {
-        MappingUtils.UploadMap(MapConfig.GetCurrent());
+        MappingUtils.BuildAndUploadMap(MapConfig.GetCurrent());
     }
 
     [MenuItem("Creature Creator/New Map", priority = 50)]

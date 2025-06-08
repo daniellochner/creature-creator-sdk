@@ -91,12 +91,15 @@ public static class MappingUtils
 		}
 	}
 
-	public static bool BuildMap(MapConfig config)
+	public static bool BuildMap(MapConfig config, bool buildAll)
 	{
-        if (!BuildPipeline.IsBuildTargetSupported(default, BuildTarget.StandaloneWindows64) || !BuildPipeline.IsBuildTargetSupported(default, BuildTarget.StandaloneOSX) || !BuildPipeline.IsBuildTargetSupported(default, BuildTarget.StandaloneLinux64) || !BuildPipeline.IsBuildTargetSupported(default, BuildTarget.Android) || !BuildPipeline.IsBuildTargetSupported(default, BuildTarget.iOS))
+		if (buildAll)
 		{
-			ThrowError($"Please ensure the following build targets are supported by installing them through Unity Hub: {BuildTarget.StandaloneWindows64}, {BuildTarget.StandaloneOSX}, {BuildTarget.StandaloneLinux64}, {BuildTarget.Android} and {BuildTarget.iOS}.");
-			return false;
+			if (!BuildPipeline.IsBuildTargetSupported(default, BuildTarget.StandaloneWindows64) || !BuildPipeline.IsBuildTargetSupported(default, BuildTarget.StandaloneOSX) || !BuildPipeline.IsBuildTargetSupported(default, BuildTarget.StandaloneLinux64) || !BuildPipeline.IsBuildTargetSupported(default, BuildTarget.Android) || !BuildPipeline.IsBuildTargetSupported(default, BuildTarget.iOS))
+			{
+				ThrowError($"Please ensure the following build targets are supported by installing them through Unity Hub: {BuildTarget.StandaloneWindows64}, {BuildTarget.StandaloneOSX}, {BuildTarget.StandaloneLinux64}, {BuildTarget.Android} and {BuildTarget.iOS}.");
+				return false;
+			}
 		}
 		if(!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
 		{
@@ -139,10 +142,13 @@ public static class MappingUtils
 
         // Build asset bundles
         BuildBundlesForPlatform(config, RuntimePlatform.WindowsPlayer);
-        BuildBundlesForPlatform(config, RuntimePlatform.OSXPlayer);
-        BuildBundlesForPlatform(config, RuntimePlatform.LinuxPlayer);
-        BuildBundlesForPlatform(config, RuntimePlatform.IPhonePlayer);
-        BuildBundlesForPlatform(config, RuntimePlatform.Android);
+		if (buildAll)
+		{
+			BuildBundlesForPlatform(config, RuntimePlatform.OSXPlayer);
+			BuildBundlesForPlatform(config, RuntimePlatform.LinuxPlayer);
+			BuildBundlesForPlatform(config, RuntimePlatform.IPhonePlayer);
+			BuildBundlesForPlatform(config, RuntimePlatform.Android);
+		}
 
         // Thumbnail
         if (config.thumbnail != null)
@@ -252,13 +258,21 @@ public static class MappingUtils
 
 	public static void BuildAndTestMap(MapConfig config)
 	{
-		if(BuildMap(config))
+		if (BuildMap(config, false))
 		{
 			TestMap(config);
 		}
 	}
 
-	public static string GetApplicationPath()
+    public static void BuildAndUploadMap(MapConfig config)
+    {
+        if (BuildMap(config, true))
+        {
+            UploadMap(config);
+        }
+    }
+
+    public static string GetApplicationPath()
 	{
 		string applicationPath;
 
