@@ -39,18 +39,16 @@ public static class AssetBundleBuilder
 
     public static void AssignBundleNames(ItemConfig config)
     {
-        string configPath = config.GetFullDirectory();
+        var configPath = config.GetFullDirectory();
 
-        string[] files = Directory.GetFiles(configPath, "*", SearchOption.AllDirectories);
+        var files = Directory.GetFiles(configPath, "*", SearchOption.AllDirectories);
 
-        string excludedDirectory = Path.Combine(configPath, "Exclude");
-        if (!Directory.Exists(excludedDirectory))
+        var excludedDirectory = Path.Combine(configPath, "Exclude");
+        var excludedFiles = new string[0];
+        if (Directory.Exists(excludedDirectory))
         {
-            Directory.CreateDirectory(excludedDirectory);
-            AssetDatabase.Refresh();
+            excludedFiles = Directory.GetFiles(excludedDirectory, "*", SearchOption.AllDirectories);
         }
-
-        string[] excludedFiles = Directory.GetFiles(excludedDirectory, "*", SearchOption.AllDirectories);
 
         foreach (string file in files)
         {

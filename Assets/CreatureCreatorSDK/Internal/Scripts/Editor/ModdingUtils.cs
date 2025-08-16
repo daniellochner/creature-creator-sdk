@@ -4,29 +4,44 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Debug = UnityEngine.Debug;
 
 public static class ModdingUtils
 {
-    public static string SetApplicationPath()
+    public static void StartGame(string applicationPath, string mapPath, string arg)
     {
-        string path = EditorUtility.OpenFilePanel("Find Creature Creator.exe", EditorSteamManager.GetInstallFolder(), "exe");
-
-        if (string.IsNullOrEmpty(path))
-            return null;
-
-        Debug.Log("Set Creature Creator.exe path to " + path);
-
-        PlayerPrefs.SetString(Constants.PlayerPrefsApplicationPathKey, path);
-        PlayerPrefs.Save();
-        return path;
+        Process process = new Process();
+        process.StartInfo.FileName = applicationPath;
+        process.StartInfo.Arguments = $"-{arg} \"{mapPath}\"";
+        process.Start();
+        Debug.Log("Starting game with arguments: " + process.StartInfo.Arguments);
     }
 
+    public static bool TryCreateNewItem<T>(out string itemName, out string itemPath) where T : ItemConfig
+    {
+        T config = ScriptableObject.CreateInstance<T>();
 
-    public static bool BuildItem<T1, T2>(T1 config, bool buildAll, Action<string> onSetup) where T1 : ItemConfig where T2 : ItemConfigData
+        itemName = EditorInputDialog.Show($"New {config.Singular}", $"Create a new {config.Singular}", $"{config.Singular} Name");
+        itemPath = Path.Combine(Application.dataPath, "Items", config.Plural, itemName);
+
+        if (Directory.Exists(itemPath))
+        {
+            ThrowError($"'{itemPath}' already exists!");
+            return false;
+        }
+        Directory.CreateDirectory(itemPath);
+
+        string configPath = Path.Combine(ConvertGlobalPathToLocalPath(itemPath), "config.asset");
+        config.bundleName = itemName.ToLower().Replace(' ', '_');
+        config.name = itemName;
+        AssetDatabase.CreateAsset(config, configPath);
+
+        Selection.activeObject = AssetDatabase.LoadAssetAtPath<MapConfig>(configPath);
+
+        return true;
+    }
+    public static bool TryBuildItem<T1, T2>(T1 config, bool buildAll, Action<string> onSetup) where T1 : ItemConfig where T2 : ItemConfigData
     {
         if (buildAll)
         {
@@ -125,17 +140,28 @@ public static class ModdingUtils
             File.Delete(file.FullName);
         }
     }
-
     public static string GetBuildPath(ItemConfig config)
     {
-        return Path.Combine(Application.dataPath, "..", $"Built {config.Plural}", config.name);
+        return Path.Combine(Application.dataPath, "..", "Items", config.Plural, config.name);
     }
-
     public static string GetBundleBuildPath(ItemConfig config)
     {
         return Path.Combine(GetBuildPath(config), config.Singular, "Bundles");
     }
 
+    public static string SetApplicationPath()
+    {
+        string path = EditorUtility.OpenFilePanel("Find Creature Creator.exe", EditorSteamManager.GetInstallFolder(), "exe");
+
+        if (string.IsNullOrEmpty(path))
+            return null;
+
+        Debug.Log("Set Creature Creator.exe path to " + path);
+
+        PlayerPrefs.SetString(Constants.PlayerPrefsApplicationPathKey, path);
+        PlayerPrefs.Save();
+        return path;
+    }
     public static string GetApplicationPath()
     {
         string applicationPath;
@@ -163,29 +189,13 @@ public static class ModdingUtils
         return applicationPath;
     }
 
-    public static void StartGame(string applicationPath, string mapPath, string arg)
-    {
-        Process process = new Process();
-        process.StartInfo.FileName = applicationPath;
-        process.StartInfo.Arguments = $"-{arg} \"{mapPath}\"";
-        process.Start();
-        Debug.Log("Starting game with arguments: " + process.StartInfo.Arguments);
-    }
-
     public static string ConvertLocalPathToGlobalPath(string localPath)
     {
         return Path.Combine(Application.dataPath.Substring(0, Application.dataPath.Length - "/Assets".Length), localPath);
     }
-
     public static string ConvertGlobalPathToLocalPath(string globalPath)
     {
         return Path.Combine(globalPath.Substring(Application.dataPath.Length - "Assets".Length));
-    }
-
-    public static void ThrowError(string error)
-    {
-        EditorUtility.DisplayDialog("Error", error, "OK");
-        throw new Exception(error);
     }
 
     public static long GetDataSize(string dataPath)
@@ -223,5 +233,10 @@ public static class ModdingUtils
         maxFileSizeMB = Math.Round(maxFileSize / 1000000f, 2);
 
         return fileSizeMB > maxFileSizeMB;
+    }
+    public static void ThrowError(string error)
+    {
+        EditorUtility.DisplayDialog("Error", error, "OK");
+        throw new Exception(error);
     }
 }

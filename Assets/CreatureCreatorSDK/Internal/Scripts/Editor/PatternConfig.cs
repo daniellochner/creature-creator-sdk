@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
+using UnityEditor;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Creature Creator/Pattern Config", fileName = "config")]
 public class PatternConfig : ItemConfig
 {
     public override string Singular => "Pattern";
@@ -17,5 +17,15 @@ public class PatternConfig : ItemConfig
             Author = author,
         };
         return JsonConvert.SerializeObject(config, Formatting.Indented);
+    }
+
+    public static PatternConfig GetCurrent()
+    {
+        var selectedObjects = Selection.objects;
+        if (selectedObjects.Length == 1 && selectedObjects[0] is PatternConfig config)
+        {
+            return config;
+        }
+        return null;
     }
 }

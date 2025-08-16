@@ -1,3 +1,4 @@
+using Codice.Utils;
 using DanielLochner.Assets.CreatureCreator;
 using Newtonsoft.Json;
 using System;
@@ -9,44 +10,26 @@ using UnityEngine.SceneManagement;
 
 public static class MappingUtils
 {
-	public static void NewMap()
+    public static void NewMap()
 	{
-		string mapName = EditorInputDialog.Show("New Map", "Create a New Map", "Map Name");
+        if (ModdingUtils.TryCreateNewItem<MapConfig>(out string mapName, out string mapPath))
+        {
+            string dstPath = Path.Combine(mapPath, $"{mapName}.unity");
+            AssetDatabase.CopyAsset("Assets/CreatureCreatorSDK/Internal/Map.unity", dstPath);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            EditorSceneManager.OpenScene(dstPath);
+        }
+    }
 
-		string mapDirectory = Path.Combine(Application.dataPath, "Items", "Maps", mapName);
-
-		if (Directory.Exists(mapDirectory))
-		{
-			ModdingUtils.ThrowError($"The map {mapName} already exists at {mapDirectory}.");
-		}
-
-		Directory.CreateDirectory(mapDirectory);
-
-		string scenePath = Path.Combine(mapDirectory, $"{mapName}.unity");
-		string mapConfigPath = Path.Combine(ModdingUtils.ConvertGlobalPathToLocalPath(mapDirectory), "config.asset");
-
-		MapConfig mapConfig = ScriptableObject.CreateInstance<MapConfig>();
-		mapConfig.bundleName = mapName.ToLower().Replace(' ', '_');
-		mapConfig.name = mapName;
-		AssetDatabase.CreateAsset(mapConfig, mapConfigPath);
-
-		AssetDatabase.CopyAsset("Assets/CreatureCreatorSDK/Toolkit/Scenes/Template.unity", scenePath);
-		AssetDatabase.SaveAssets();
-		AssetDatabase.Refresh();
-
-		Selection.activeObject = AssetDatabase.LoadAssetAtPath<MapConfig>(mapConfigPath);
-
-		EditorSceneManager.OpenScene(scenePath);
-	}
-
-	public static bool BuildMap(MapConfig config, bool buildAll)
+    public static bool BuildMap(MapConfig config, bool buildAll)
 	{
         if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
         {
             return false;
         }
 
-        return ModdingUtils.BuildItem<MapConfig, MapConfigData>(config, buildAll, delegate (string buildPath)
+        return ModdingUtils.TryBuildItem<MapConfig, MapConfigData>(config, buildAll, delegate (string buildPath)
         {
             string[] scenes = Directory.GetFiles(config.GetFullDirectory(), "*.unity", SearchOption.AllDirectories);
             if (scenes.Length > 1)
@@ -116,23 +99,6 @@ public static class MappingUtils
         ModdingUtils.StartGame(ModdingUtils.GetApplicationPath(), path, "uploadmap");
 	}
 
-	public static void BuildAndTestMap(MapConfig config)
-	{
-		if (BuildMap(config, false))
-		{
-			TestMap(config);
-		}
-	}
-
-    public static void BuildAndUploadMap(MapConfig config)
-    {
-        if (BuildMap(config, true))
-        {
-            UploadMap(config);
-        }
-    }
-
-
     public static void CheckForErrors()
     {
         if (CustomMapValidator.IsSceneValid(SceneManager.GetActiveScene(), out string error))
@@ -144,7 +110,6 @@ public static class MappingUtils
             EditorUtility.DisplayDialog("Error", error, "OK");
         }
     }
-
     public static void GenerateThumbnail(MapConfig config)
     {
         if (ImageGenerator.TryGetThumbnail(512, 512, out Texture2D tex))

@@ -4,7 +4,6 @@ using UnityEngine.SceneManagement;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-[CreateAssetMenu(menuName = "Creature Creator/Map Config", fileName = "config")]
 public class MapConfig : ItemConfig
 {
     public Texture2D thumbnail;

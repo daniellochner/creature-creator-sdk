@@ -5,7 +5,6 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using DanielLochner.Assets.CreatureCreator;
 
-[CreateAssetMenu(menuName = "Creature Creator/Body Part Config", fileName = "config")]
 public class BodyPartConfig : ItemConfig
 {
     public override string Singular => "Body Part";
@@ -22,4 +21,14 @@ public class BodyPartConfig : ItemConfig
         };
         return JsonConvert.SerializeObject(config, Formatting.Indented);
 	}
+
+    public static BodyPartConfig GetCurrent()
+    {
+        var selectedObjects = Selection.objects;
+        if (selectedObjects.Length == 1 && selectedObjects[0] is BodyPartConfig config)
+        {
+            return config;
+        }
+        return null;
+    }
 }
