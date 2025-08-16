@@ -11,7 +11,7 @@ public static class PatternUtils
         if (ModdingUtils.TryCreateNewItem<PatternConfig>(out string patternName, out string patternPath))
         {
             string dstPath = Path.Combine(patternPath, $"{patternName}.png");
-            AssetDatabase.CopyAsset("Assets/CreatureCreatorSDK/Internal/Pattern.png", dstPath);
+            AssetDatabase.CopyAsset("Assets/CreatureCreatorSDK/Internal/Templates/Pattern.png", dstPath);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }

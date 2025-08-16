@@ -15,7 +15,7 @@ public static class MappingUtils
         if (ModdingUtils.TryCreateNewItem<MapConfig>(out string mapName, out string mapPath))
         {
             string dstPath = Path.Combine(mapPath, $"{mapName}.unity");
-            AssetDatabase.CopyAsset("Assets/CreatureCreatorSDK/Internal/Map.unity", dstPath);
+            AssetDatabase.CopyAsset("Assets/CreatureCreatorSDK/Internal/Templates/Map.unity", dstPath);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             EditorSceneManager.OpenScene(dstPath);
