@@ -1,16 +1,9 @@
 using System.Collections.Generic;
-using UnityEngine;
+using System;
 
-[System.Serializable]
-public class MapConfigData
+[Serializable]
+public class MapConfigData : ItemConfigData
 {
-    public string SDKVersion;
-    public string ItemId;
-
-    public string Name;
-    [TextArea]
-    public string Description;
-    public string Author;
     public List<string> BodyPartIds;
     public List<string> PatternIds;
 }
