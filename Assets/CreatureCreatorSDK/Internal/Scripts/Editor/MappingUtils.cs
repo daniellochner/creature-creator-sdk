@@ -13,7 +13,7 @@ public static class MappingUtils
 	{
 		string mapName = EditorInputDialog.Show("New Map", "Create a New Map", "Map Name");
 
-		string mapDirectory = Path.Combine(Application.dataPath, "Maps", mapName);
+		string mapDirectory = Path.Combine(Application.dataPath, "Items", "Maps", mapName);
 
 		if (Directory.Exists(mapDirectory))
 		{
