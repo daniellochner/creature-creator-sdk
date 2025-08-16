@@ -36,15 +36,11 @@ public static class ModdingUtils
                 return false;
             }
         }
-        if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
-        {
-            return false;
-        }
 
         var startTime = DateTime.Now;
-        Debug.Log("Build started");
+        Debug.Log("Build started.");
 
-        // Previous config
+        // Load previous config
         string buildPath = GetBuildPath(config);
         string configPath = Path.Combine(buildPath, "config.json");
         T2 prevConfigData = null;
@@ -53,16 +49,18 @@ public static class ModdingUtils
             prevConfigData = JsonConvert.DeserializeObject<T2>(File.ReadAllText(configPath));
         }
 
-        // Delete existing build
+        // Delete existing build if it exists
         if (Directory.Exists(buildPath))
         {
             Directory.Delete(buildPath, true);
         }
         Directory.CreateDirectory(buildPath);
 
+        // Setup
         onSetup?.Invoke(buildPath);
 
         // Build asset bundles
+        config.hideFlags |= HideFlags.DontUnloadUnusedAsset;
         BuildBundlesForPlatform(config, RuntimePlatform.WindowsPlayer);
         if (buildAll)
         {
@@ -71,8 +69,9 @@ public static class ModdingUtils
             BuildBundlesForPlatform(config, RuntimePlatform.IPhonePlayer);
             BuildBundlesForPlatform(config, RuntimePlatform.Android);
         }
+        config.hideFlags &= ~HideFlags.DontUnloadUnusedAsset;
 
-        // New Config
+        // Generate new config using previous ItemId
         string nextDataJson = config.GetJSON();
         T2 nextData = JsonConvert.DeserializeObject<T2>(nextDataJson);
         if (prevConfigData != null)
@@ -81,10 +80,11 @@ public static class ModdingUtils
         }
         File.WriteAllText(configPath, JsonConvert.SerializeObject(nextData, Formatting.Indented));
 
+        // Log
         Debug.Log($"Build completed in {DateTime.Now.Subtract(startTime).TotalSeconds.ToString("0")} seconds: {buildPath}");
+
         return true;
     }
-
 
     public static void BuildBundlesForPlatform(ItemConfig config, RuntimePlatform platform)
     {

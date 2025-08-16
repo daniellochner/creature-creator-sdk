@@ -41,6 +41,11 @@ public static class MappingUtils
 
 	public static bool BuildMap(MapConfig config, bool buildAll)
 	{
+        if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+        {
+            return false;
+        }
+
         return ModdingUtils.BuildItem<MapConfig, MapConfigData>(config, buildAll, delegate (string buildPath)
         {
             string[] scenes = Directory.GetFiles(config.GetFullDirectory(), "*.unity", SearchOption.AllDirectories);
