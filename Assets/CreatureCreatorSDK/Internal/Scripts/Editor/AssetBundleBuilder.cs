@@ -9,7 +9,6 @@ public static class AssetBundleBuilder
 {
 	public static void BuildAssetBundles(ItemConfig config, string buildPath, BuildTarget buildTarget)
 	{
-        AssetDatabase.RemoveUnusedAssetBundleNames();
         BuildPipeline.BuildAssetBundles(buildPath, GetAssetBuilds(config.bundleName), BuildAssetBundleOptions.DeterministicAssetBundle, buildTarget);
     }
 
@@ -39,6 +38,8 @@ public static class AssetBundleBuilder
 
     public static void AssignBundleNames(ItemConfig config)
     {
+        ClearAllAssetBundleNames();
+
         var configPath = config.GetFullDirectory();
 
         var files = Directory.GetFiles(configPath, "*", SearchOption.AllDirectories);
@@ -71,6 +72,16 @@ public static class AssetBundleBuilder
                 assetImporter.assetBundleName = config.bundleName + "_scene";
             else
                 assetImporter.assetBundleName = config.bundleName;
+        }
+    }
+
+    public static void ClearAllAssetBundleNames()
+    {
+        string[] bundleNames = AssetDatabase.GetAllAssetBundleNames();
+
+        foreach (string name in bundleNames)
+        {
+            AssetDatabase.RemoveAssetBundleName(name, true);
         }
     }
 }
