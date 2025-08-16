@@ -33,7 +33,7 @@ public class ModdingMenus : MonoBehaviour
 	[MenuItem("Creature Creator/Map/Build _F4", priority = 300)]
 	public static void BuildMap()
 	{
-		MappingUtils.BuildMap(MapConfig.GetCurrent(), true);
+		MappingUtils.BuildMap(MapConfig.GetCurrent(), false);
 	}
 
 	[MenuItem("Creature Creator/Map/Test", priority = 301)]
