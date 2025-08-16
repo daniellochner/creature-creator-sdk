@@ -24,14 +24,16 @@ public static class AssetBundleBuilder
         foreach (string targetName in targetNames)
         {
             string[] assets = AssetDatabase.GetAssetPathsFromAssetBundle(targetName);
+            if (assets.Length > 0)
+            {
+                AssetBundleBuild build = new AssetBundleBuild();
+                build.assetBundleName = targetName;
+                build.assetNames = assets;
 
-            AssetBundleBuild build = new AssetBundleBuild();
-            build.assetBundleName = targetName;
-            build.assetNames = assets;
-
-            builds.Add(build);
+                builds.Add(build);
+            }
         }
-
+        
         return builds.ToArray();
     }
 
