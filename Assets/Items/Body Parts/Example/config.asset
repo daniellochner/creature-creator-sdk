@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Example
   author: Daniel Lochner
-  description: Example body part created using the modding SDK
+  description: Example body part created using the modding SDK.
   bundleName: example
   thumbnail: {fileID: 0}
   type: 0
