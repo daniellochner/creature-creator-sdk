@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Green Screen
   author: Daniel Lochner
-  description: The custom green screen custom map offers a solid background for capturing
+  description: The green screen custom map offers a solid background for capturing
     high-quality screenshots of your creatures.
   bundleName: greenscreen
   thumbnail: {fileID: 2800000, guid: 6e46efc191565eb4288e48bfee242b1c, type: 3}
