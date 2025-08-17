@@ -11,7 +11,7 @@ public class BodyPartConfig : ItemConfig
     public Diet diet;
     public int complexity;
     public int health;
-    public int weight;
+    public float weight;
     public float speed;
     public List<AbilityType> abilities;
 

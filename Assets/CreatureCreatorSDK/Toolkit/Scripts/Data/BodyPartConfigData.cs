@@ -10,7 +10,7 @@ namespace DanielLochner.Assets.CreatureCreator
         public Diet Diet;
         public int Complexity;
         public int Health;
-        public int Weight;
+        public float Weight;
         public float Speed;
         public List<AbilityType> Abilities;
 
