@@ -31,6 +31,7 @@ public static class BodyPartUtils
 
     public static void UploadBodyPart(BodyPartConfig config)
     {
-
+        string path = ModdingUtils.GetBuildPath(config);
+        ModdingUtils.StartGame(ModdingUtils.GetApplicationPath(), path, "uploadbodypart");
     }
 }

@@ -32,6 +32,7 @@ public static class PatternUtils
 
     public static void UploadPattern(PatternConfig config)
     {
-
+        string path = ModdingUtils.GetBuildPath(config);
+        ModdingUtils.StartGame(ModdingUtils.GetApplicationPath(), path, "uploadpattern");
     }
 }
