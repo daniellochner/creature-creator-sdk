@@ -18,9 +18,9 @@ public static class ModdingUtils
         Debug.Log("Starting game with arguments: " + process.StartInfo.Arguments);
     }
 
-    public static bool TryCreateNewItem<T>(out string itemName, out string itemPath) where T : ItemConfig
+    public static bool TryCreateNewItem<T>(out string itemName, out string itemPath, out T config) where T : ItemConfig
     {
-        T config = ScriptableObject.CreateInstance<T>();
+        config = ScriptableObject.CreateInstance<T>();
 
         itemName = EditorInputDialog.Show($"New {config.Singular}", $"Create a new {config.Singular}", $"{config.Singular} Name");
         itemPath = Path.Combine(Application.dataPath, "Items", config.Plural, itemName);
@@ -41,7 +41,7 @@ public static class ModdingUtils
 
         return true;
     }
-    public static bool TryBuildItem<T1, T2>(T1 config, bool buildAll, Action<string> onSetup) where T1 : ItemConfig where T2 : ItemConfigData
+    public static bool TryBuildItem<T1, T2>(T1 config, bool buildAll, Action<string> onSetup = null) where T1 : ItemConfig where T2 : ItemConfigData
     {
         if (buildAll)
         {
@@ -73,6 +73,12 @@ public static class ModdingUtils
 
         // Setup
         onSetup?.Invoke(buildPath);
+        if (config.thumbnail != null)
+        {
+            var src = ConvertLocalPathToGlobalPath(AssetDatabase.GetAssetPath(config.thumbnail));
+            var dst = Path.Combine(config.GetDirectory(), "thumb.png");
+            File.Copy(src, dst);
+        }
 
         // Build asset bundles
         config.hideFlags |= HideFlags.DontUnloadUnusedAsset;

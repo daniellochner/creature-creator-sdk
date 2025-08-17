@@ -6,7 +6,6 @@ using System.Collections.Generic;
 
 public class MapConfig : ItemConfig
 {
-    public Texture2D thumbnail;
     public List<string> bodyPartIds;
     public List<string> patternIds;
 

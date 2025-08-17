@@ -8,21 +8,20 @@ public static class PatternUtils
 {
     public static void NewPattern()
     {
-        if (ModdingUtils.TryCreateNewItem<PatternConfig>(out string patternName, out string patternPath))
+        if (ModdingUtils.TryCreateNewItem(out string patternName, out string patternPath, out PatternConfig config))
         {
             string dstPath = Path.Combine(patternPath, $"{patternName}.png");
             AssetDatabase.CopyAsset("Assets/CreatureCreatorSDK/Internal/Templates/Pattern.png", dstPath);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+
+            config.thumbnail = AssetDatabase.LoadAssetAtPath<Texture2D>(ModdingUtils.ConvertGlobalPathToLocalPath(dstPath));
         }
     }
 
     public static bool BuildPattern(PatternConfig config, bool buildAll)
     {
-        return ModdingUtils.TryBuildItem<PatternConfig, PatternConfigData>(PatternConfig.GetCurrent(), buildAll, delegate
-        {
-
-        });
+        return ModdingUtils.TryBuildItem<PatternConfig, PatternConfigData>(PatternConfig.GetCurrent(), buildAll);
     }
 
     public static void TestPattern(PatternConfig config)

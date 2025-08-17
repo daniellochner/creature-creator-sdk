@@ -1,7 +1,3 @@
-using Codice.Utils;
-using DanielLochner.Assets.CreatureCreator;
-using Newtonsoft.Json;
-using System;
 using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -12,7 +8,7 @@ public static class MappingUtils
 {
     public static void NewMap()
 	{
-        if (ModdingUtils.TryCreateNewItem<MapConfig>(out string mapName, out string mapPath))
+        if (ModdingUtils.TryCreateNewItem(out string mapName, out string mapPath, out MapConfig config))
         {
             string dstPath = Path.Combine(mapPath, $"{mapName}.unity");
             AssetDatabase.CopyAsset("Assets/CreatureCreatorSDK/Internal/Templates/Map.unity", dstPath);
@@ -40,18 +36,11 @@ public static class MappingUtils
             if (!CustomMapValidator.IsSceneValid(scene, out string error))
             {
                 ModdingUtils.ThrowError(error);
+                return;
             }
             CustomMapSecurityValidator.SanitizeAnimators(scene);
             EditorSceneManager.SaveOpenScenes();
             GenerateThumbnail(config);
-
-            if (config.thumbnail != null)
-            {
-                string thumbnailPath = ModdingUtils.ConvertLocalPathToGlobalPath(AssetDatabase.GetAssetPath(config.thumbnail));
-                string thumbnailBuildPath = Path.Combine(buildPath, "thumb.png");
-
-                File.Copy(thumbnailPath, thumbnailBuildPath);
-            }
         });
 	}
 

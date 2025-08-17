@@ -80,7 +80,7 @@ public class ModdingMenus : MonoBehaviour
     [MenuItem("Creature Creator/Body Part/Test", priority = 52)]
     public static void TestBodyPart()
     {
-        BodyPartUtils.BuildBodyPart(BodyPartConfig.GetCurrent(), false);
+        BodyPartUtils.TestBodyPart(BodyPartConfig.GetCurrent());
     }
 
     [MenuItem("Creature Creator/Body Part/Build and Test", priority = 53)]
@@ -97,7 +97,7 @@ public class ModdingMenus : MonoBehaviour
     {
         if (BodyPartUtils.BuildBodyPart(BodyPartConfig.GetCurrent(), true))
         {
-            BodyPartUtils.TestBodyPart(BodyPartConfig.GetCurrent());
+            BodyPartUtils.UploadBodyPart(BodyPartConfig.GetCurrent());
         }
     }
 
@@ -127,7 +127,7 @@ public class ModdingMenus : MonoBehaviour
     [MenuItem("Creature Creator/Pattern/Test", priority = 52)]
     public static void TestPattern()
     {
-        PatternUtils.BuildPattern(PatternConfig.GetCurrent(), false);
+        PatternUtils.TestPattern(PatternConfig.GetCurrent());
     }
 
     [MenuItem("Creature Creator/Pattern/Build and Test", priority = 53)]
@@ -144,7 +144,7 @@ public class ModdingMenus : MonoBehaviour
     {
         if (PatternUtils.BuildPattern(PatternConfig.GetCurrent(), true))
         {
-            PatternUtils.TestPattern(PatternConfig.GetCurrent());
+            PatternUtils.UploadPattern(PatternConfig.GetCurrent());
         }
     }
 
