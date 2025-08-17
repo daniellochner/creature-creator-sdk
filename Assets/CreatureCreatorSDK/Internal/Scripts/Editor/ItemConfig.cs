@@ -7,7 +7,7 @@ public abstract class ItemConfig : ScriptableObject
     public string author;
     [TextArea] public string description;
     [HideInInspector] public string bundleName;
-    public Texture2D thumbnail;
+    [HideInInspector] public Texture2D thumbnail;
 
     public abstract string Singular { get; }
     public abstract string Plural { get; }

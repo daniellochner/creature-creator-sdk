@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 public class MapConfig : ItemConfig
 {
+    [Header("Map")]
     public List<string> bodyPartIds;
     public List<string> patternIds;
 
