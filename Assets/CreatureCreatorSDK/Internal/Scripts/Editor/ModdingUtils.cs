@@ -106,7 +106,6 @@ public static class ModdingUtils
         string bundleBuildPath = GetBundleBuildPath(config) + $"_{platform}";
         Directory.CreateDirectory(bundleBuildPath);
 
-        AssetBundleBuilder.ClearAllAssetBundleNames();
         AssetBundleBuilder.AssignBundleNames(config);
 
         BuildTarget buildTarget = default;
