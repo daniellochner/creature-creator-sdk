@@ -3,6 +3,7 @@ using UnityEngine;
 
 public abstract class ItemConfig : ScriptableObject
 {
+    [Header("Item")]
     public new string name;
     public string author;
     [TextArea] public string description;

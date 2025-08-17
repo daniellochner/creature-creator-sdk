@@ -1,12 +1,19 @@
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 using DanielLochner.Assets.CreatureCreator;
+using System.Collections.Generic;
+using static DanielLochner.Assets.CreatureCreator.BodyPartConfigData;
 
 public class BodyPartConfig : ItemConfig
 {
+    [Header("Body Part")]
+    public SaveType type;
+    public int complexity;
+    public int health;
+    public int weight;
+    public float speed;
+    public List<AbilityType> abilities;
+
     public override string Singular => "Body Part";
     public override string Plural => "Body Parts";
 
@@ -18,13 +25,19 @@ public class BodyPartConfig : ItemConfig
             Name = name,
             Description = description,
             Author = author,
+            Type = type,
+            Complexity = complexity,
+            Health = health,
+            Weight = weight,
+            Speed = speed,
+            Abilities = abilities
         };
         return JsonConvert.SerializeObject(config, Formatting.Indented);
 	}
 
     public static BodyPartConfig GetCurrent()
     {
-        var selectedObjects = Selection.objects;
+        var selectedObjects = UnityEditor.Selection.objects;
         if (selectedObjects.Length == 1 && selectedObjects[0] is BodyPartConfig config)
         {
             return config;
