@@ -8,6 +8,7 @@ public class BodyPartConfig : ItemConfig
 {
     [Header("Body Part")]
     public SaveType type;
+    public Diet diet;
     public int complexity;
     public int health;
     public int weight;
@@ -30,7 +31,8 @@ public class BodyPartConfig : ItemConfig
             Health = health,
             Weight = weight,
             Speed = speed,
-            Abilities = abilities
+            Abilities = abilities,
+            Diet = diet
         };
         return JsonConvert.SerializeObject(config, Formatting.Indented);
 	}

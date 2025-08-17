@@ -7,13 +7,13 @@ namespace DanielLochner.Assets.CreatureCreator
     public class BodyPartConfigData : ItemConfigData
     {
         public SaveType Type;
+        public Diet Diet;
         public int Complexity;
         public int Health;
         public int Weight;
         public float Speed;
         public List<AbilityType> Abilities;
 
-        [Serializable]
         public enum SaveType
         {
             Detail,
@@ -30,7 +30,6 @@ namespace DanielLochner.Assets.CreatureCreator
             Leg
         }
 
-        [Serializable]
         public enum AbilityType
         {
             Bite1,
