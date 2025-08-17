@@ -27,7 +27,8 @@ public static class PatternUtils
 
     public static void TestPattern(PatternConfig config)
     {
-
+        string path = ModdingUtils.GetBuildPath(config);
+        ModdingUtils.StartGame(ModdingUtils.GetApplicationPath(), path, "loadpattern");
     }
 
     public static void UploadPattern(PatternConfig config)

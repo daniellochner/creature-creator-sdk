@@ -37,7 +37,7 @@ public static class ModdingUtils
         config.name = itemName;
         AssetDatabase.CreateAsset(config, configPath);
 
-        Selection.activeObject = AssetDatabase.LoadAssetAtPath<MapConfig>(configPath);
+        Selection.activeObject = AssetDatabase.LoadAssetAtPath<T>(configPath);
 
         return true;
     }

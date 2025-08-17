@@ -25,7 +25,8 @@ public static class BodyPartUtils
 
     public static void TestBodyPart(BodyPartConfig config)
     {
-
+        string path = ModdingUtils.GetBuildPath(config);
+        ModdingUtils.StartGame(ModdingUtils.GetApplicationPath(), path, "loadbodypart");
     }
 
     public static void UploadBodyPart(BodyPartConfig config)
