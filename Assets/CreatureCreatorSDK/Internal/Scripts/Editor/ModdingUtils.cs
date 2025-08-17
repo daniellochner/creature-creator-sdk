@@ -76,8 +76,8 @@ public static class ModdingUtils
         if (config.thumbnail != null)
         {
             var src = ConvertLocalPathToGlobalPath(AssetDatabase.GetAssetPath(config.thumbnail));
-            var dst = Path.Combine(config.GetDirectory(), "thumb.png");
-            File.Copy(src, dst);
+            var dst = Path.Combine(buildPath, "thumb.png");
+            File.Copy(src, dst, true);
         }
 
         // Build asset bundles
