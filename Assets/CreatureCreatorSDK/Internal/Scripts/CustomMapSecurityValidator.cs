@@ -47,7 +47,9 @@ public static class CustomMapSecurityValidator
 		typeof(SetTag),
 		typeof(MinimapVisual),
 		typeof(WindZone),
-		typeof(WaterProxy)
+		typeof(WaterProxy),
+		typeof(UnlockableBodyPartProxy),
+		typeof(UnlockablePatternProxy)
     };
 
 	public static bool IsGameObjectValid(GameObject go, out string error)

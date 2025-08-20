@@ -17,5 +17,7 @@ MonoBehaviour:
   description: Example map created using the modding SDK.
   bundleName: example
   thumbnail: {fileID: 2800000, guid: 19a9f829f55c946459fb8eddeeb8d3c9, type: 3}
-  bodyPartIds: []
-  patternIds: []
+  bodyPartIds:
+  - 3550993097
+  patternIds:
+  - 3550993548
