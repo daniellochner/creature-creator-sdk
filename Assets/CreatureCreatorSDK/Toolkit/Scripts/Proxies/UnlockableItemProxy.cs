@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class UnlockableItemProxy : ProxyBehaviour
 {
-
+    public string itemId;
 }

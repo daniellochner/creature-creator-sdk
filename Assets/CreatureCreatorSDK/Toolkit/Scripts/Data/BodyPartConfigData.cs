@@ -14,6 +14,8 @@ namespace DanielLochner.Assets.CreatureCreator
         public float Speed;
         public List<AbilityType> Abilities;
 
+        public override string Singular => "Body Part";
+
         public enum SaveType
         {
             Detail,
