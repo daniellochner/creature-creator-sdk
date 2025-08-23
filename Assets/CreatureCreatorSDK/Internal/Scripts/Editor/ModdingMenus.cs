@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting.FullSerializer;
+using System;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -18,143 +17,174 @@ public class ModdingMenus : MonoBehaviour
 	{
         ModdingUtils.SetApplicationPath();
 	}
+
+    [MenuItem("Creature Creator/Build", priority = 51)]
+    public static void Build()
+    {
+        PerformOperation(BuildMap, BuildBodyPart, BuildPattern);
+    }
+    [MenuItem("Creature Creator/Test", priority = 52)]
+    public static void Test()
+    {
+        PerformOperation(TestMap, TestBodyPart, TestPattern);
+    }
+    [MenuItem("Creature Creator/Build and Test", priority = 53)]
+    public static void BuildAndTest()
+    {
+        PerformOperation(BuildAndTestMap, BuildAndTestBodyPart, BuildAndTestPattern);
+    }
+    [MenuItem("Creature Creator/Upload to Workshop", priority = 54)]
+    public static void UploadToWorkshop()
+    {
+        PerformOperation(BuildAndUploadMap, BuildAndUploadBodyPart, BuildAndUploadPattern);
+    }
+
+    public static void PerformOperation(Action<MapConfig> onMap, Action<BodyPartConfig> onBodyPart, Action<PatternConfig> onPattern)
+    {
+        if (MapConfig.GetSelected() is MapConfig mapConfig)
+        {
+            if (mapConfig != MapConfig.GetCurrent())
+            {
+                ModdingUtils.ThrowError("The selected map is not loaded.");
+            }
+            else
+            {
+                onMap?.Invoke(mapConfig);
+            }
+        }
+        else
+        if (BodyPartConfig.GetSelected() is BodyPartConfig bodyPartConfig)
+        {
+            onBodyPart?.Invoke(bodyPartConfig);
+        }
+        else
+        if (PatternConfig.GetSelected() is PatternConfig patternConfig)
+        {
+            onPattern?.Invoke(patternConfig);
+        }
+        else
+        {
+            ModdingUtils.ThrowError("Please select a config file to perform an operation.");
+        }
+    }
+
+    [MenuItem("Creature Creator/Build", true)]
+    [MenuItem("Creature Creator/Test", true)]
+    [MenuItem("Creature Creator/Build and Test", true)]
+    [MenuItem("Creature Creator/Upload to Workshop", true)]
+    private static bool ValidateConfig()
+    {
+        if (MapConfig.GetSelected() != null)
+        {
+            return true;
+        }
+        else
+        if (BodyPartConfig.GetSelected() != null)
+        {
+            return true;
+        }
+        else
+        if (PatternConfig.GetSelected() != null)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
     #endregion
 
     #region Map
-    [MenuItem("Creature Creator/Map/New", priority = 1)]
+    [MenuItem("Creature Creator/New/Map", priority = 1)]
     public static void NewMap()
     {
         MappingUtils.NewMap();
     }
 
-    [MenuItem("Creature Creator/Map/Check For Errors _F3", priority = 51)]
-    public static void CheckForErrors()
+	public static void BuildMap(MapConfig config)
 	{
-		MappingUtils.CheckForErrors();
+		MappingUtils.BuildMap(config, false);
 	}
-
-	[MenuItem("Creature Creator/Map/Build _F4", priority = 52)]
-	public static void BuildMap()
+	public static void TestMap(MapConfig config)
 	{
-		MappingUtils.BuildMap(MapConfig.GetCurrent(), false);
+		MappingUtils.TestMap(config);
 	}
-
-	[MenuItem("Creature Creator/Map/Test", priority = 53)]
-	public static void TestMap()
+	public static void BuildAndTestMap(MapConfig config)
 	{
-		MappingUtils.TestMap(MapConfig.GetCurrent());
-	}
-
-	[MenuItem("Creature Creator/Map/Build and Test _F5", priority = 54)]
-	public static void BuildAndTestMap()
-	{
-        if (MappingUtils.BuildMap(MapConfig.GetCurrent(), false))
+        if (MappingUtils.BuildMap(config, false))
         {
-            MappingUtils.TestMap(MapConfig.GetCurrent());
+            MappingUtils.TestMap(config);
         }
 	}
-
-    [MenuItem("Creature Creator/Map/Upload to Workshop", priority = 55)]
-    public static void BuildAndUploadMap()
+    public static void BuildAndUploadMap(MapConfig config)
     {
-        if (MappingUtils.BuildMap(MapConfig.GetCurrent(), true))
+        if (MappingUtils.BuildMap(config, true))
         {
-            MappingUtils.UploadMap(MapConfig.GetCurrent());
+            MappingUtils.UploadMap(config);
         }
     }
     #endregion
 
     #region Body Part
-    [MenuItem("Creature Creator/Body Part/New", priority = 2)]
+    [MenuItem("Creature Creator/New/Body Part", priority = 2)]
     public static void NewBodyPart()
     {
         BodyPartUtils.NewBodyPart();
     }
-
-    [MenuItem("Creature Creator/Body Part/Build", priority = 51)]
-    public static void BuildBodyPart()
-	{
-		BodyPartUtils.BuildBodyPart(BodyPartConfig.GetCurrent(), false);
-	}
-
-    [MenuItem("Creature Creator/Body Part/Test", priority = 52)]
-    public static void TestBodyPart()
-    {
-        BodyPartUtils.TestBodyPart(BodyPartConfig.GetCurrent());
-    }
-
-    [MenuItem("Creature Creator/Body Part/Build and Test", priority = 53)]
-    public static void BuildAndTestBodyPart()
-    {
-        if (BodyPartUtils.BuildBodyPart(BodyPartConfig.GetCurrent(), false))
-        {
-            BodyPartUtils.TestBodyPart(BodyPartConfig.GetCurrent());
-        }
-    }
     
-    [MenuItem("Creature Creator/Body Part/Upload to Workshop", priority = 54)]
-    public static void BuildAndUploadBodyPart()
+    public static void BuildBodyPart(BodyPartConfig config)
+	{
+		BodyPartUtils.BuildBodyPart(config, false);
+	}
+    public static void TestBodyPart(BodyPartConfig config)
     {
-        if (BodyPartUtils.BuildBodyPart(BodyPartConfig.GetCurrent(), true))
+        BodyPartUtils.TestBodyPart(config);
+    }
+    public static void BuildAndTestBodyPart(BodyPartConfig config)
+    {
+        if (BodyPartUtils.BuildBodyPart(config, false))
         {
-            BodyPartUtils.UploadBodyPart(BodyPartConfig.GetCurrent());
+            BodyPartUtils.TestBodyPart(config);
         }
     }
-
-    [MenuItem("Creature Creator/Body Part/Build", true)]
-    [MenuItem("Creature Creator/Body Part/Test", true)]
-    [MenuItem("Creature Creator/Body Part/Build and Test", true)]
-    [MenuItem("Creature Creator/Body Part/Upload to Workshop", true)]
-    private static bool ValidateBodyPartConfig()
+    public static void BuildAndUploadBodyPart(BodyPartConfig config)
     {
-        return BodyPartConfig.GetCurrent() != null;
+        if (BodyPartUtils.BuildBodyPart(config, true))
+        {
+            BodyPartUtils.UploadBodyPart(config);
+        }
     }
     #endregion
 
     #region Pattern
-    [MenuItem("Creature Creator/Pattern/New", priority = 3)]
+    [MenuItem("Creature Creator/New/Pattern", priority = 3)]
     public static void NewPattern()
     {
         PatternUtils.NewPattern();
     }
 
-    [MenuItem("Creature Creator/Pattern/Build", priority = 51)]
-    public static void BuildPattern()
+    public static void BuildPattern(PatternConfig config)
     {
-        PatternUtils.BuildPattern(PatternConfig.GetCurrent(), false);
+        PatternUtils.BuildPattern(config, false);
     }
-
-    [MenuItem("Creature Creator/Pattern/Test", priority = 52)]
-    public static void TestPattern()
+    public static void TestPattern(PatternConfig config)
     {
-        PatternUtils.TestPattern(PatternConfig.GetCurrent());
+        PatternUtils.TestPattern(config);
     }
-
-    [MenuItem("Creature Creator/Pattern/Build and Test", priority = 53)]
-    public static void BuildAndTestPattern()
+    public static void BuildAndTestPattern(PatternConfig config)
     {
-        if (PatternUtils.BuildPattern(PatternConfig.GetCurrent(), false))
+        if (PatternUtils.BuildPattern(config, false))
         {
-            PatternUtils.TestPattern(PatternConfig.GetCurrent());
+            PatternUtils.TestPattern(config);
         }
     }
-
-    [MenuItem("Creature Creator/Pattern/Upload to Workshop", priority = 54)]
-    public static void BuildAndUploadPattern()
+    public static void BuildAndUploadPattern(PatternConfig config)
     {
-        if (PatternUtils.BuildPattern(PatternConfig.GetCurrent(), true))
+        if (PatternUtils.BuildPattern(config, true))
         {
-            PatternUtils.UploadPattern(PatternConfig.GetCurrent());
+            PatternUtils.UploadPattern(config);
         }
-    }
-
-    [MenuItem("Creature Creator/Pattern/Build", true)]
-    [MenuItem("Creature Creator/Pattern/Test", true)]
-    [MenuItem("Creature Creator/Pattern/Build and Test", true)]
-    [MenuItem("Creature Creator/Pattern/Upload to Workshop", true)]
-    private static bool ValidatePatternConfig()
-    {
-        return PatternConfig.GetCurrent() != null;
     }
     #endregion
 }

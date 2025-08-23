@@ -38,7 +38,7 @@ public class BodyPartConfig : ItemConfig
         return JsonConvert.SerializeObject(config, Formatting.Indented);
 	}
 
-    public static BodyPartConfig GetCurrent()
+    public static BodyPartConfig GetSelected()
     {
         var selectedObjects = UnityEditor.Selection.objects;
         if (selectedObjects.Length == 1 && selectedObjects[0] is BodyPartConfig config)

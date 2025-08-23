@@ -27,6 +27,15 @@ public class MapConfig : ItemConfig
         return JsonConvert.SerializeObject(config, Formatting.Indented);
 	}
 
+    public static MapConfig GetSelected()
+    {
+        var selectedObjects = Selection.objects;
+        if (selectedObjects.Length == 1 && selectedObjects[0] is MapConfig config)
+        {
+            return config;
+        }
+        return null;
+    }
     public static MapConfig GetCurrent()
     {
         string scenePath = SceneManager.GetActiveScene().path;

@@ -46,7 +46,7 @@ public static class ProjectInit
 	{
         var version = await GitHubVersionUtility.GetLatestReleaseAsync("daniellochner", "creature-creator-sdk");
 
-		if (version != SDKVersion)
+		if (!string.IsNullOrEmpty(version) && version != SDKVersion)
 		{
             if (EditorUtility.DisplayDialog("Error", $"The current installed Creature Creator SDK (v{SDKVersion}) is out of date. Please download the new version v{version}!", "New Version"))
             {

@@ -20,7 +20,7 @@ public class PatternConfig : ItemConfig
         return JsonConvert.SerializeObject(config, Formatting.Indented);
     }
 
-    public static PatternConfig GetCurrent()
+    public static PatternConfig GetSelected()
     {
         var selectedObjects = Selection.objects;
         if (selectedObjects.Length == 1 && selectedObjects[0] is PatternConfig config)
