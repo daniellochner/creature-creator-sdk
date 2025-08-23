@@ -30,7 +30,7 @@ public static class PatternUtils
             return false;
         }
 
-        return ModdingUtils.TryBuildItem<PatternConfig, PatternConfigData>(PatternConfig.GetSelected(), buildAll);
+        return ModdingUtils.TryBuildItem<PatternConfig, PatternConfigData>(config, buildAll);
     }
 
     public static void TestPattern(PatternConfig config)

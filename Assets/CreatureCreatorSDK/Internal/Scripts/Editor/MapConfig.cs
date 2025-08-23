@@ -3,9 +3,14 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System;
 
 public class MapConfig : ItemConfig
 {
+    [Header("Map")]
+    public List<LinkedItem> linkedBodyParts;
+    public List<LinkedItem> linkedPatterns;
+
     [HideInInspector] public List<string> bodyPartIds;
     [HideInInspector] public List<string> patternIds;
 
@@ -53,5 +58,12 @@ public class MapConfig : ItemConfig
         }
 
         return config;
+    }
+
+    [Serializable]
+    public class LinkedItem
+    {
+        public string itemId;
+        public ItemConfig config;
     }
 }

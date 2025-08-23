@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -102,19 +103,65 @@ public class ModdingMenus : MonoBehaviour
         MappingUtils.NewMap();
     }
 
-	public static void BuildMap(MapConfig config)
+    private static bool TryBuildMapDependencies(MapConfig config)
+    {
+        foreach (var bodyPart in config.linkedBodyParts)
+        {
+            BuildBodyPart(bodyPart.config as BodyPartConfig);
+            SetupLinkedItem(bodyPart);
+        }
+        foreach (var pattern in config.linkedPatterns)
+        {
+            BuildPattern(pattern.config as PatternConfig);
+            SetupLinkedItem(pattern);
+        }
+        return true;
+    }
+    private static void SetupLinkedItem(MapConfig.LinkedItem item)
+    {
+        string persistentDataPath = Path.Combine(Application.persistentDataPath, "..", "..", "Daniel Lochner", "Creature Creator");
+
+        string modsDir = Path.Combine(persistentDataPath, "mods");
+        if (!Directory.Exists(modsDir))
+        {
+            Directory.CreateDirectory(modsDir);
+        }
+
+        string dirName = item.config.Singular.ToLower().Replace(" ", "");
+        string dirPath = Path.Combine(modsDir, dirName);
+        if (!Directory.Exists(dirPath))
+        {
+            Directory.CreateDirectory(dirPath);
+        }
+
+        string src = ModdingUtils.GetBuildPath(item.config);
+        string dst = Path.Combine(dirPath, item.itemId);
+        if (Directory.Exists(dst))
+        {
+            Directory.Delete(dst, true);
+        }
+        Directory.Move(src, dst);
+    }
+
+    public static void BuildMap(MapConfig config)
 	{
-		MappingUtils.BuildMap(config, false);
-	}
+        if (TryBuildMapDependencies(config))
+        {
+            MappingUtils.BuildMap(config, false);
+        }
+    }
 	public static void TestMap(MapConfig config)
 	{
-		MappingUtils.TestMap(config);
-	}
-	public static void BuildAndTestMap(MapConfig config)
+        MappingUtils.TestMap(config);
+    }
+    public static void BuildAndTestMap(MapConfig config)
 	{
-        if (MappingUtils.BuildMap(config, false))
+        if (TryBuildMapDependencies(config))
         {
-            MappingUtils.TestMap(config);
+            if (MappingUtils.BuildMap(config, false))
+            {
+                MappingUtils.TestMap(config);
+            }
         }
 	}
     public static void BuildAndUploadMap(MapConfig config)

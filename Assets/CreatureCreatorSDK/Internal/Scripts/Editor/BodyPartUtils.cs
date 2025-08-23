@@ -27,7 +27,7 @@ public static class BodyPartUtils
             return false;
         }
 
-        return ModdingUtils.TryBuildItem<BodyPartConfig, BodyPartConfigData>(BodyPartConfig.GetSelected(), buildAll, delegate
+        return ModdingUtils.TryBuildItem<BodyPartConfig, BodyPartConfigData>(config, buildAll, delegate
         {
             string excludeDir = Path.Combine(config.GetDirectory(), "Exclude");
             if (Directory.Exists(excludeDir))
