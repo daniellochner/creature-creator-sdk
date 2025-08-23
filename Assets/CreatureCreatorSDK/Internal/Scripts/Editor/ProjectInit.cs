@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 [InitializeOnLoad]
 public static class ProjectInit
 {
-	public const string SDKVersion = "1.6.19";
+	public const string SDKVersion = "1.6.20";
 	const string requiredVersion = "6000.1.12f1";
 	const string configURL = "https://playcreature.com/sdk/config.json";
 
