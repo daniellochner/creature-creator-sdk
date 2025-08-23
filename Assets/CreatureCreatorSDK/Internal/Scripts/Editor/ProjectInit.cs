@@ -4,7 +4,7 @@ using UnityEngine;
 [InitializeOnLoad]
 public static class ProjectInit
 {
-	public const string SDKVersion = "1.6.20";
+	public const string SDKVersion = "1.6.21";
 	const string requiredVersion = "6000.1.12f1";
 
 	public static bool CanBuild { get; private set; } = true;
