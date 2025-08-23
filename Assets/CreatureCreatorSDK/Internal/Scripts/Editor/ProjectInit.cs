@@ -1,21 +1,13 @@
-using Newtonsoft.Json;
-using System;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Networking;
 
 [InitializeOnLoad]
 public static class ProjectInit
 {
 	public const string SDKVersion = "1.6.20";
 	const string requiredVersion = "6000.1.12f1";
-	const string configURL = "https://playcreature.com/sdk/config.json";
 
 	public static bool CanBuild { get; private set; } = true;
-
-	static bool requestedConfig;
-	static bool configDownloadCompleted;
-	static UnityWebRequest configRequest;
 
 	static ProjectInit()
 	{
@@ -26,12 +18,12 @@ public static class ProjectInit
 	{
 		SetPlayerSettings();
 		CheckEditorVersion();
-		DownloadConfig();
+		CheckSDKVersion();
 	}
 
 	static void SetPlayerSettings()
 	{
-		if(PlayerSettings.colorSpace != ColorSpace.Linear)
+		if (PlayerSettings.colorSpace != ColorSpace.Linear)
 		{
 			Debug.Log("Setting color space to Linear.");
 			PlayerSettings.colorSpace = ColorSpace.Linear;
@@ -42,7 +34,7 @@ public static class ProjectInit
 	{
 		string version = Application.unityVersion;
 
-		if(version != requiredVersion)
+		if (version != requiredVersion)
 		{
 			string error = $"Invalid version! You need Unity {requiredVersion} but are running Unity {version}.";
 			EditorUtility.DisplayDialog("Invalid Version", error, "OK");
@@ -50,54 +42,16 @@ public static class ProjectInit
 		}
 	}
 
-	static void DownloadConfig()
+	static async void CheckSDKVersion()
 	{
-		if(requestedConfig)
+        var version = await GitHubVersionUtility.GetLatestReleaseAsync("daniellochner", "creature-creator-sdk");
+
+		if (version != SDKVersion)
 		{
-			return;
-		}
-
-		configRequest = UnityWebRequest.Get(configURL);
-		configRequest.SendWebRequest();
-		EditorApplication.update += Update_DownloadConfigProcess;
-
-		requestedConfig = true;
-	}
-
-	static void Update_DownloadConfigProcess()
-	{
-		if(!configRequest.isDone || configDownloadCompleted)
-		{
-			return;
-		}
-
-		configDownloadCompleted = true;
-		EditorApplication.update -= Update_DownloadConfigProcess;
-
-		if(configRequest.isNetworkError || configRequest.isHttpError)
-		{
-			Debug.LogError($"Error getting config information: {configRequest.error}");
-			return;
-		}
-
-		var config = JsonConvert.DeserializeObject<SDKConfig>(configRequest.downloadHandler.text);
-
-		// Major version change
-		if(config.currentVersion != SDKVersion)
-		{
-			CanBuild = false;
-			if(EditorUtility.DisplayDialog("Error", $"The installed Creature Creator SDK version (v{SDKVersion}) is out of date. Download the new version v{config.currentVersion}.", "New Version"))
-			{
-				Application.OpenURL(config.downloadPage);
-			}
-			return;
-		}
-	}
-
-	[Serializable]
-	class SDKConfig
-	{
-		public string currentVersion;
-		public string downloadPage;
-	}
+            if (EditorUtility.DisplayDialog("Error", $"The current installed Creature Creator SDK (v{SDKVersion}) is out of date. Please download the new version v{version}!", "New Version"))
+            {
+                Application.OpenURL("https://github.com/daniellochner/creature-creator-sdk/releases");
+            }
+        }
+    }
 }
