@@ -18,6 +18,7 @@ public class MapConfig : ItemConfig
         var config = new MapConfigData
         {
             SDKVersion = ProjectInit.SDKVersion,
+            BundleName = bundleName,
             Name = name,
             Description = description,
             Author = author,

@@ -23,6 +23,7 @@ public class BodyPartConfig : ItemConfig
         var config = new BodyPartConfigData
         {
             SDKVersion = ProjectInit.SDKVersion,
+            BundleName = bundleName,
             Name = name,
             Description = description,
             Author = author,

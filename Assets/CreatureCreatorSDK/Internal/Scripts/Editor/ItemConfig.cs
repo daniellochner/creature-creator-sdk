@@ -1,3 +1,4 @@
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -20,6 +21,10 @@ public abstract class ItemConfig : ScriptableObject
         string path = AssetDatabase.GetAssetPath(this);
         path = path.Substring(0, path.Length - "config.asset".Length);
         return path;
+    }
+    public string GetDirectoryName()
+    {
+        return Path.GetFileName(Path.GetDirectoryName(GetFullDirectory()));
     }
     public string GetFullDirectory()
     {

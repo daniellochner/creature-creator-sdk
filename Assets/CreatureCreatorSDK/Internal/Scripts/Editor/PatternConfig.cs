@@ -12,6 +12,7 @@ public class PatternConfig : ItemConfig
         var config = new PatternConfigData
         {
             SDKVersion = ProjectInit.SDKVersion,
+            BundleName = bundleName,
             Name = name,
             Description = description,
             Author = author,

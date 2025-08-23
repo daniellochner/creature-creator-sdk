@@ -148,7 +148,7 @@ public static class ModdingUtils
     }
     public static string GetBuildPath(ItemConfig config)
     {
-        return Path.Combine(Application.dataPath, "..", "Items", config.Plural, config.name);
+        return Path.Combine(Application.dataPath, "..", "Items", config.Plural, config.GetDirectoryName());
     }
     public static string GetBundleBuildPath(ItemConfig config)
     {

@@ -6,6 +6,7 @@ public abstract class ItemConfigData
 {
     public string SDKVersion;
     public string ItemId;
+    public string BundleName;
 
     public string Name;
     [TextArea]
