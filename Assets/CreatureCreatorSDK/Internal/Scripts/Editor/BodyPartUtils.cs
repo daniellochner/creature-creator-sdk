@@ -18,10 +18,12 @@ public static class BodyPartUtils
 
     public static bool BuildBodyPart(BodyPartConfig config, bool buildAll)
     {
-        string[] prefabs = Directory.GetFiles(config.GetFullDirectory(), $"{config.name}.prefab", SearchOption.AllDirectories);
+        string bodyPartName = config.GetDirectoryName();
+
+        string[] prefabs = Directory.GetFiles(config.GetFullDirectory(), $"{bodyPartName}.prefab", SearchOption.AllDirectories);
         if (prefabs.Length != 1)
         {
-            ModdingUtils.ThrowError($"One prefab must exist with the name '{config.name}'.");
+            ModdingUtils.ThrowError($"One prefab must exist with the name '{bodyPartName}' (i.e., it must match the directory's name).");
             return false;
         }
 

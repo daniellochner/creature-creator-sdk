@@ -21,6 +21,15 @@ public static class PatternUtils
 
     public static bool BuildPattern(PatternConfig config, bool buildAll)
     {
+        string patternName = config.GetDirectoryName();
+
+        string[] images = Directory.GetFiles(config.GetFullDirectory(), patternName, SearchOption.AllDirectories);
+        if (images.Length != 1)
+        {
+            ModdingUtils.ThrowError($"One image must exist with the name '{patternName}' (i.e., it must match the directory's name).");
+            return false;
+        }
+
         return ModdingUtils.TryBuildItem<PatternConfig, PatternConfigData>(PatternConfig.GetCurrent(), buildAll);
     }
 
