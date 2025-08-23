@@ -25,19 +25,22 @@ public static class MappingUtils
             return false;
         }
 
+        string[] scenes = Directory.GetFiles(config.GetFullDirectory(), "*.unity", SearchOption.AllDirectories);
+        if (scenes.Length > 1)
+        {
+            ModdingUtils.ThrowError("More than one scene found in the map folder.");
+            return false;
+        }
+
+        Scene scene = SceneManager.GetActiveScene();
+        if (!CustomMapValidator.IsSceneValid(scene, out string error))
+        {
+            ModdingUtils.ThrowError(error);
+            return false;
+        }
+
         return ModdingUtils.TryBuildItem<MapConfig, MapConfigData>(config, buildAll, delegate (string buildPath)
         {
-            string[] scenes = Directory.GetFiles(config.GetFullDirectory(), "*.unity", SearchOption.AllDirectories);
-            if (scenes.Length > 1)
-            {
-                ModdingUtils.ThrowError("More than one scene found in the map folder.");
-            }
-            Scene scene = SceneManager.GetActiveScene();
-            if (!CustomMapValidator.IsSceneValid(scene, out string error))
-            {
-                ModdingUtils.ThrowError(error);
-                return;
-            }
             CustomMapSecurityValidator.SanitizeAnimators(scene);
             EditorSceneManager.SaveOpenScenes();
             GenerateThumbnail(config);

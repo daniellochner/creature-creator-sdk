@@ -1,6 +1,7 @@
 using System.IO;
 using DanielLochner.Assets.CreatureCreator;
 using UnityEditor;
+using UnityEngine;
 
 public static class BodyPartUtils
 {
@@ -17,9 +18,25 @@ public static class BodyPartUtils
 
     public static bool BuildBodyPart(BodyPartConfig config, bool buildAll)
     {
+        string[] prefabs = Directory.GetFiles(config.GetFullDirectory(), $"{config.name}.prefab", SearchOption.AllDirectories);
+        if (prefabs.Length != 1)
+        {
+            ModdingUtils.ThrowError($"One prefab must exist with the name '{config.name}'.");
+            return false;
+        }
+
         return ModdingUtils.TryBuildItem<BodyPartConfig, BodyPartConfigData>(BodyPartConfig.GetCurrent(), buildAll, delegate
         {
-
+            string excludeDir = Path.Combine(config.GetDirectory(), "Exclude");
+            if (Directory.Exists(excludeDir))
+            {
+                string thumbnailPath = Path.Combine(excludeDir, "thumb.png");
+                if (File.Exists(thumbnailPath))
+                {
+                    Texture2D savedTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(thumbnailPath);
+                    config.thumbnail = savedTexture;
+                }
+            }
         });
     }
 
