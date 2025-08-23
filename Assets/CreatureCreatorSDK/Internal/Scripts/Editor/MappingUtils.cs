@@ -44,6 +44,7 @@ public static class MappingUtils
             CustomMapSecurityValidator.SanitizeAnimators(scene);
             EditorSceneManager.SaveOpenScenes();
             GenerateThumbnail(config);
+            UpdateUnlockables(config);
         });
 	}
 
@@ -124,5 +125,27 @@ public static class MappingUtils
             config.thumbnail = savedTexture;
             EditorUtility.SetDirty(config);
         }
+    }
+    public static void UpdateUnlockables(MapConfig config)
+    {
+        config.bodyPartIds.Clear();
+        foreach (var bodyPartProxy in Object.FindObjectsByType<UnlockableBodyPartProxy>(FindObjectsSortMode.None))
+        {
+            if (!string.IsNullOrEmpty(bodyPartProxy.itemId))
+            {
+                config.bodyPartIds.Add(bodyPartProxy.itemId);
+            }
+        }
+        
+        config.patternIds.Clear();
+        foreach (var patternProxy in Object.FindObjectsByType<UnlockablePatternProxy>(FindObjectsSortMode.None))
+        {
+            if (!string.IsNullOrEmpty(patternProxy.itemId))
+            {
+                config.patternIds.Add(patternProxy.itemId);
+            }
+        }
+
+        EditorUtility.SetDirty(config);
     }
 }

@@ -6,9 +6,8 @@ using System.Collections.Generic;
 
 public class MapConfig : ItemConfig
 {
-    [Header("Map")]
-    public List<string> bodyPartIds;
-    public List<string> patternIds;
+    [HideInInspector] public List<string> bodyPartIds;
+    [HideInInspector] public List<string> patternIds;
 
     public override string Singular => "Map";
     public override string Plural => "Maps";
