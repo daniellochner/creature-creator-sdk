@@ -19,7 +19,7 @@ The game should then open and load the example scene in adventure mode!
 Now that you know everything is working as expected, let's begin by creating a new mod!
 1. Navigate to to the top menu bar and select "Creature Creator > New", and choose a name! This will create a new folder for your mod and select the config file.
   
-There are three types of mods, namely: [Body Barts](##-body-parts), [Patterns](##-patterns) and [Maps](##-maps). While different, they each follow a similar process to setup.
+There are three types of mods, namely: [Body Barts](##body-parts), [Patterns](##patterns) and [Maps](##maps). While different, they each follow a similar process to setup.
 
 ## Body Parts
 1. Drag your model file into your folder.
