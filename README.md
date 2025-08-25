@@ -1,20 +1,19 @@
 ![Creature Creator Logo](./Logo.png)
 
-Welcome to the **Creature Creator SDK**!
-With this SDK, you can create and share mods for Creature Creator including maps, body parts, and patterns.
-This guide will walk you through installation, testing, creating mods, and uploading them to the Steam Workshop.
+Welcome to the **Creature Creator SDK** — the official toolkit for building and distributing mods for Creature Creator, including maps, body parts, and patterns.
+This guide will walk you through installation, testing examples, creating mods, and uploading them to the Steam Workshop.
 
 # 🚀 Installation
 1. First, download [Unity 6000.1.12](https://unity.com/releases/editor/whats-new/6000.1.12) and the [latest version of the SDK](https://github.com/daniellochner/creature-creator-sdk/releases)!
 2. Open Unity Hub, and create a new project by selecting **Unity 6000.1.12** and then scrolling down to the **"3D (Built-In Render Pipeline)"** template. Enter a name and then click the button to create your project.
-3. Drag and drop the SDK Unity package into your project files, and then click the "Import" button to add it to your project. If you ever need to update the SDK. you can follow the same process.
+3. Drag-and-drop the SDK Unity package into your project files, and then click the "Import" button to add it to your project. To update the SDK, you can follow the same process.
 Great! You are now all setup and ready to get started!
 
 # 🧪 Testing the Examples
-Before we begin creating our own mods, let's test the examples to see if everything is working as expected!
-1. Go to your project window and double click on the "Example" scene file in "Assets/Items/Maps/Example" to load the example map.
+Before we begin creating our own mods, let's test the examples to see if everything is working as expected.
+1. Go to your project window and double click on the "Example" scene file in `Assets/Items/Maps/Example` to load the example map.
 2. Next, select the config file and navigate to the top menu bar again and click on "Creature Creator > Build and Test". This will start the build process for the map, as well as the unlockable part and pattern, which are referenced as dependencies in the config file!
-3. Once completed, the executable will be launched with command-line arguments pointing to your mod! Note that if the executable cannot be found, click "Creature Creator > Locate Creature Creator.exe". The application should be installed in the "~/Steam/steamapps/common/" directory.
+3. Once completed, the executable will be launched with command-line arguments pointing to your mod! Note that if the executable cannot be found, click "Creature Creator > Locate Creature Creator.exe". The application should be installed in the `~/Steam/steamapps/common/` directory.
 The game should then open and load the example scene in adventure mode!
 
 # 🎨 Creating Mods
