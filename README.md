@@ -1,21 +1,23 @@
 ![Creature Creator Logo](./Logo.png)
 
-Here is a guide on how to create mods for Creature Creator!
+Welcome to the **Creature Creator SDK**!
+With this SDK, you can create and share mods for Creature Creator including maps, body parts, and patterns.
+This guide will walk you through installation, testing, creating mods, and uploading them to the Steam Workshop.
 
-# Installation
+# 🚀 Installation
 1. First, download [Unity 6000.1.12](https://unity.com/releases/editor/whats-new/6000.1.12) and the [latest version of the SDK](https://github.com/daniellochner/creature-creator-sdk/releases)!
 2. Open Unity Hub, and create a new project by selecting **Unity 6000.1.12** and then scrolling down to the **"3D (Built-In Render Pipeline)"** template. Enter a name and then click the button to create your project.
 3. Drag and drop the SDK Unity package into your project files, and then click the "Import" button to add it to your project. If you ever need to update the SDK. you can follow the same process.
 Great! You are now all setup and ready to get started!
 
-# Getting Started
-Before we begin creating our own mods, let’s test the examples to see if everything is working as expected!
+# 🧪 Testing the Examples
+Before we begin creating our own mods, let's test the examples to see if everything is working as expected!
 1. Go to your project window and double click on the "Example" scene file in "Assets/Items/Maps/Example" to load the example map.
 2. Next, select the config file and navigate to the top menu bar again and click on "Creature Creator > Build and Test". This will start the build process for the map, as well as the unlockable part and pattern, which are referenced as dependencies in the config file!
 3. Once completed, the executable will be launched with command-line arguments pointing to your mod! Note that if the executable cannot be found, click "Creature Creator > Locate Creature Creator.exe". The application should be installed in the "~/Steam/steamapps/common/" directory.
 The game should then open and load the example scene in adventure mode!
 
-# Creating Mods
+# 🎨 Creating Mods
 Now that you know everything is working as expected, let's begin by creating a new mod!
 Navigate to to the top menu bar and select "Creature Creator > New", and choose a name! This will create a new folder for your mod and select the config file.
 There are three types of mods, namely: [Body Barts](##body-parts), [Patterns](##patterns) and [Maps](##maps). While different, they each follow a similar process to setup.
@@ -43,12 +45,11 @@ Patterns are quite simple to add! To simplify the process, just open up the gene
    - Water: Drag-and-drop the water proxy prefab and position it to be over your water.
    - Dark Area: Drag-and-drop the dark area prefab into the scene to ensure creatures’ use bioluminescent parts in certain areas.
 
-# Uploading Mods to the Workshop
+# ☁️ Uploading Mods to the Workshop
 Fantastic! You should now have a custom body part, pattern or map that has been tested, and is ready to uplod to the Steam workshop!
 1. Before you can upload, you'll need to make sure that all the required modules are installed via Unity Hub for the different platforms. This includes "Windows Build Support (Mono)", "Mac Build Support (IL2CPP)", "Linux Build Support (Mono)", "iOS Build Support" and "Android Build Support".
 2. Now you can navigate to the top menu bar again with your mod's config selected and click on "Creature Creator > Upload to Workshop".
 This will launch the game and begin the upload process, and once complete, open the Steam workshop for your mod!
 
-Hope this helps! If you need any help, please feel free to send a message on the community Discord server! I'm looking forward to downloading your mods in-game!
-
-Thanks!
+# 💬 Need Help?
+If you need any help, please feel free to send a message on the community Discord server! I'm looking forward to seeing your mods in-game!
