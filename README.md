@@ -25,7 +25,7 @@ There are three types of mods, namely: [Body Barts](##body-parts), [Patterns](##
 
 ## Body Parts
 1. Drag-and-drop your model file into your part's newly generated folder.
-2. In the mesh import settings of your model, enable `Read/Write` mode! This is necessary for the outline effect to be rendererd.
+2. In the mesh import settings of your model, enable `Read/Write` mode! This is necessary for the outline effect to be rendered.
 3. Next, double click on the prefab and drag-and-drop your model (from Unity) into it. Remember to delete the previous "Model" game object in the prefab.
 4. You now have a basic, functional body part, but let's enhance it with some additional features.
    - **Materials**: If you would like the materials to be colourable, you can name them "Body_Primary" or "Body_Secondary" to use the body's primary or secondary colours by default respectively. These materials can then be overidden from the paint menu in-game.
@@ -47,7 +47,7 @@ Patterns are quite simple to add! To simplify the process, just open up the temp
    - **Dark Area**: Drag-and-drop the dark area prefab into the scene to ensure creatures use bioluminescent parts in certain areas.
 
 # ☁️ Uploading Mods to the Workshop
-Fantastic! You should now have a custom body part, pattern or map that has been tested, and is ready to uplod to the Steam workshop!
+Fantastic! You should now have a custom body part, pattern or map that has been tested, and is ready to upload to the Steam workshop!
 1. Before you can upload, you'll need to make sure that all the required modules are installed via Unity Hub for the different platforms, including:
    - Windows Build Support (Mono)
    - Mac Build Support (IL2CPP)
