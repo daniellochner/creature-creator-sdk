@@ -10,6 +10,7 @@ This guide will walk you through installation, testing examples, creating mods, 
 Great! You are now all setup and ready to get started!
 
 # 🧪 Testing the Examples
+![Example Map](./ExampleMap.png)
 Before we begin creating our own mods, let's test the examples to see if everything is working as expected.
 1. Go to your project window and double click on the `Example.unity` scene file in `Assets/Items/Maps/Example/` to load the example map.
 2. Next, select the config file and navigate to the top menu bar again and click on "Creature Creator > Build and Test". This will start the build process for the map, as well as the unlockable part and pattern, which are referenced as dependencies in the config file.
