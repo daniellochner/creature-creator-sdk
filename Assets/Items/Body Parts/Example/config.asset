@@ -17,7 +17,7 @@ MonoBehaviour:
   description: Example body part created using the modding SDK.
   bundleName: example
   thumbnail: {fileID: 0}
-  type: 0
+  type: 7
   diet: 0
   complexity: 1
   health: 1
