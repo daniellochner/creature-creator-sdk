@@ -1,0 +1,136 @@
+Type,Name,Complexity,Health,Weight,Speed
+Arm,Onetacle,9,16,15,0
+Arm,Duo-Brachium,9,20,20,0
+Arm,Duo-Cuboid,9,12,10,0
+Arm,Tri-Cuboid,9,12,10,0
+Arm,Duo-Cylindrical,9,12,10,0
+Arm,Tri-Cylindrical,9,11,8,0
+Detail,Tri-Fin,2,5,0.5,0
+Detail,Crown,2,7,3,0
+Detail,GlowBlister,2,5,0.5,0
+Detail,Hard Shell,1,8,5,-0.05
+Detail,Quad Fin,2,7,3,0
+Detail,Chunk,1,5,0.5,0
+Detail,Cotton Ball,1,5,0.25,0
+Detail,Danglerfish,2,6,1.5,0
+Detail,Bone,1,5,1,0
+Detail,Button,1,5,0.5,0
+Detail,Dem Dry Bones,1,6,2,0
+Detail,Exo Esqueletico,1,5,0.75,0
+Detail,Mohawk Fin,3,6,2,0.05
+Detail,Antenna,1,5,1,0
+Detail,Shark Fin,3,5,0.75,0
+Detail,Skull Craneum,1,8,4,-0.05
+Detail,Stickler,2,7,3,0
+Detail,Tentacle Beard,2,6,1.5,0
+Detail,Shard,2,5,1,0
+Ear,Felinear,4,5,0.5,0
+Ear,Evil Ear,3,5,0.75,0
+Ear,Audiodish,3,5,0.5,0
+Ear,Ogre Ear,3,5,0.5,0
+Eye,Repteye,3,5,0.75,0
+Eye,Skull Eye,3,5,0.5,0
+Eye,Seavonian Eye,3,5,0.5,0
+Eye,Sauro-Seers,3,5,0.5,0
+Eye,Periscope,3,5,0.5,0
+Eye,Eyecosahedron,3,5,0.75,0
+Eye,Nautileye,3,5,0.5,0
+Eye,Moleocule,3,6,2,0
+Eye,Insecticeye'd,3,5,1,0
+Eye,Eyeful,3,5,0.5,0
+Eye,Doublevision,3,5,1,0
+Eye,Cyclorb,3,5,0.5,0
+Eye,Armored Eye,3,5,1,0
+Eye,Provident Eye,3,5,0.5,0
+Eye,Surpreyes’d,3,5,0.5,0
+Eye,Stalkward,3,5,0.5,0
+Eye,Weary Observers,3,5,0.5,0
+Eye,Tri-Insectoid,3,5,0.75,0
+Foot,Theropaws,4,7,3,0.1
+Foot,Raptor Talon,4,7,3,0
+Foot,Clawy,4,7,3,0.1
+Foot,Frog Foot,5,7,3,0.2
+Foot,Claw Foot,4,8,4,0.2
+Foot,Bladefoot,4,6,2,0.25
+Foot,Webbed Feet,5,6,2,0.1
+Foot,Web Foot,5,6,2,0.1
+Foot,Unkempt Toenails,4,8,4,0.2
+Foot,Clovehoof,4,9,6,0.25
+Foot,Bugfeet,4,8,4,0.25
+Hand,Bladehand,3,7,3,0
+Hand,The Plunger,3,5,1,0
+Hand,Handiak,3,7,3,0
+Hand,Lil' Paw,3,6,2,0
+Hand,Claw Hand,3,7,3,0
+Hand,Primal Paw,3,8,4,0
+Hand,The Claw™,3,6,2,0
+Hand,Frog Hand,4,7,3,0
+Hand,Tentacle Hand,4,10,7.5,0
+Hand,Stinger,3,7,3,0
+Hand,Suction Induction Hand,3,8,5,0
+Hand,Handover,3,8,4,0
+Hand,Crusty Crab,3,8,5,0
+Hand,Clawed Martyr,3,8,4,0
+Hand,Lobster Pincer,3,7,3,0
+Leg,Tri-Crus,9,12,10,0.2
+Leg,Duo-Crus,9,20,20,0.2
+Leg,Tri-Cylindrical,9,12,10,0.2
+Leg,Tri-Cuboid,9,12,10,0.2
+Leg,Duo-Cylindrical,9,12,10,0.2
+Leg,Duo-Cuboid,9,16,15,0.2
+Leg,Bug Stepper,9,12,10,0.1
+Mouth,Hippopotamus,8,14,12,0
+Mouth,Fire-Axed,8,11,8,0
+Mouth,Burner,8,10,7,0
+Mouth,Miriapojaw,7,7,3,0
+Mouth,Alien Puppet,7,8,4,0
+Mouth,Anteapzid,8,11,8,0
+Mouth,Beetlesnatch,7,7,3,0
+Mouth,Bug Sword,7,6,2.5,0
+Mouth,Waspoid,7,7,3,0
+Mouth,Woodeater,7,6,2,0
+Mouth,MawPinch,7,7,3,0
+Mouth,Acrididae,7,7,3,0
+Mouth,ReptiFang,7,9,6,0
+Mouth,Fruit Sucker,7,7,3,0
+Mouth,Face-Blesser,9,10,7.5,0
+Mouth,Beak,7,8,4,0
+Mouth,Carnizaur,8,12,10,0
+Mouth,Carpe Diem,7,7,3,0
+Mouth,Colgate™ Commercial,7,8,5,0
+Mouth,Draconic,8,10,7,0
+Mouth,Fanged Menace,8,8,5,0
+Mouth,Shorty,7,12,10,0
+Mouth,Jaws,7,9,6,0
+Mouth,Megazaur,8,13,11,0
+Mouth,Ophiapzid,8,14,12,0
+Mouth,Peliking,7,11,8,0
+Mouth,Piragnaw,7,8,4,0
+Mouth,Suck-ulent,8,8,5,0
+Mouth,Placodermian,7,8,5,0
+Mouth,Piscizaur,8,12,10,0
+Mouth,Rodent Sniffer,8,8,4,0
+Mouth,Scaverzaur,8,12,10,0
+Mouth,Snaggleteeth,8,11,8,0
+Mouth,Toothless,6,10,7,0
+Mouth,Wormhole,8,8,5,0
+Mouth,Trap Jaw,7,8,4,0
+Mouth,Trunk,6,8,5,0
+Mouth,Wild Sniffer,9,9,6,0
+Nose,Smelly,3,5,0.75,0
+Nose,Hollownose,3,5,0.5,0
+Tail,Scaly Tail,6,25,25,-0.1
+Tail,Lobster Tail,7,12,10,-0.1
+Tail,Monkey Tail,5,5,1,0
+Weapon,Ram Horn,3,8,4,0
+Weapon,Unihorn,4,6,2,0
+Weapon,Tusk,3,8,5,0
+Weapon,Tree Horn,3,10,7.5,0
+Weapon,Stag Antlers,3,12,10,0
+Weapon,Spiral Horn,3,14,12.5,0
+Weapon,Spike Cluster,4,8,5,0
+Weapon,Sharp Antlers,3,10,7.5,0
+Weapon,Broad Thorn,4,8,4,0
+Wing,Aerofoilet,6,8,4,-0.05
+Wing,Wicked Wings,6,14,12.5,-0.05
+Wing,Feathered Toothbrush,6,12,10,-0.075
