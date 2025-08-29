@@ -25,14 +25,14 @@ public static class EditorSteamManager
 		{
 			if(!SteamUser.BLoggedOn())
 			{
-				Debug.Log("Steam user not logged on." + "\nMake sure you are logged into Steam and connected to the internet.");
+				Debug.Log("Steam user not logged on. (Make sure you are logged into Steam and connected to the internet)");
 				SteamAPI.Shutdown();
 				return;
 			}
 		}
 		else
 		{
-			Debug.Log("Failed to initialize Steam." + "\nMake sure you are logged into Steam and connected to the internet.");
+			Debug.Log("Failed to initialize Steam. (Make sure you are logged into Steam and connected to the internet)");
 			return;
 		}
 
