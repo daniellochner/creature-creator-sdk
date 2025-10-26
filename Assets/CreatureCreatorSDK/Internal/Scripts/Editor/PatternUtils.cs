@@ -36,12 +36,36 @@ public static class PatternUtils
     public static void TestPattern(PatternConfig config)
     {
         string path = ModdingUtils.GetBuildPath(config);
+
+        if (IsTooLarge(path))
+        {
+            return;
+        }
+
         ModdingUtils.StartGame(ModdingUtils.GetApplicationPath(), path, "loadpattern");
     }
 
     public static void UploadPattern(PatternConfig config)
     {
         string path = ModdingUtils.GetBuildPath(config);
+
+        if (IsTooLarge(path))
+        {
+            return;
+        }
+
         ModdingUtils.StartGame(ModdingUtils.GetApplicationPath(), path, "uploadpattern");
+    }
+
+    private static bool IsTooLarge(string path)
+    {
+        var windowsBundlePath = Path.Combine(path, "Pattern", "Bundles_WindowsPlayer");
+        var maxFileSizeMB = 1f;
+        if (ModdingUtils.CheckFileSize(windowsBundlePath, maxFileSizeMB, out float fileSizeMB))
+        {
+            ModdingUtils.ThrowError($"Your custom pattern is too large! ({fileSizeMB:0.00}MB > {maxFileSizeMB:0.00}MB)");
+            return true;
+        }
+        return false;
     }
 }

@@ -58,9 +58,8 @@ public static class MappingUtils
 			return;
 		}
 
-        if (ModdingUtils.CheckFileSize(path, out double fileSizeMB, out double maxFileSizeMB))
+        if (IsTooLarge(path))
         {
-            ModdingUtils.ThrowError($"Your custom map is too large! ({fileSizeMB:00}MB > {maxFileSizeMB:00}MB)");
             return;
         }
 
@@ -83,15 +82,25 @@ public static class MappingUtils
 			return;
 		}
 
-        if (ModdingUtils.CheckFileSize(path, out double fileSizeMB, out double maxFileSizeMB))
+        if (IsTooLarge(path))
         {
-            ModdingUtils.ThrowError($"Your custom map is too large! ({fileSizeMB:00}MB > {maxFileSizeMB:00}MB)");
             return;
         }
 
         ModdingUtils.StartGame(ModdingUtils.GetApplicationPath(), path, "uploadmap");
 	}
 
+    private static bool IsTooLarge(string path)
+    {
+        var windowsBundlePath = Path.Combine(path, "Map", "Bundles_WindowsPlayer");
+        var maxFileSizeMB = 25f;
+        if (ModdingUtils.CheckFileSize(windowsBundlePath, maxFileSizeMB, out float fileSizeMB))
+        {
+            ModdingUtils.ThrowError($"Your custom map is too large! ({fileSizeMB:0.00}MB > {maxFileSizeMB:0.00}MB)");
+            return true;
+        }
+        return false;
+    }
     public static void CheckForErrors()
     {
         if (CustomMapValidator.IsSceneValid(SceneManager.GetActiveScene(), out string error))

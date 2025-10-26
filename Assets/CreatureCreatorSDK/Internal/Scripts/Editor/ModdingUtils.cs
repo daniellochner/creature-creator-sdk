@@ -230,13 +230,11 @@ public static class ModdingUtils
 
         return 0;
     }
-    public static bool CheckFileSize(string dataPath, out double fileSizeMB, out double maxFileSizeMB)
+    public static bool CheckFileSize(string dataPath, float maxFileSizeMB, out float fileSizeMB)
     {
         var fileSize = GetDataSize(dataPath);
-        var maxFileSize = 100000000; // 100MB
 
-        fileSizeMB = Math.Round(fileSize / 1000000f, 2);
-        maxFileSizeMB = Math.Round(maxFileSize / 1000000f, 2);
+        fileSizeMB = (float)Math.Round(fileSize / 1000000f, 2);
 
         return fileSizeMB > maxFileSizeMB;
     }

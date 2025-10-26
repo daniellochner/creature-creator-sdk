@@ -45,12 +45,36 @@ public static class BodyPartUtils
     public static void TestBodyPart(BodyPartConfig config)
     {
         string path = ModdingUtils.GetBuildPath(config);
+
+        if (IsTooLarge(path))
+        {
+            return;
+        }
+
         ModdingUtils.StartGame(ModdingUtils.GetApplicationPath(), path, "loadbodypart");
     }
 
     public static void UploadBodyPart(BodyPartConfig config)
     {
         string path = ModdingUtils.GetBuildPath(config);
+
+        if (IsTooLarge(path))
+        {
+            return;
+        }
+
         ModdingUtils.StartGame(ModdingUtils.GetApplicationPath(), path, "uploadbodypart");
+    }
+
+    private static bool IsTooLarge(string path)
+    {
+        var windowsBundlePath = Path.Combine(path, "Body Part", "Bundles_WindowsPlayer");
+        var maxFileSizeMB = 1f;
+        if (ModdingUtils.CheckFileSize(windowsBundlePath, maxFileSizeMB, out float fileSizeMB))
+        {
+            ModdingUtils.ThrowError($"Your custom body part is too large! ({fileSizeMB:0.00}MB > {maxFileSizeMB:0.00}MB)");
+            return true;
+        }
+        return false;
     }
 }
