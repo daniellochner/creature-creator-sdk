@@ -38,25 +38,30 @@ public static class BodyPartUtils
 
         int vertCount = 0;
         int meshCount = 0;
+        int modifiedMeshCount = 0;
         foreach (var mf in meshFilters)
         {
             if (mf.sharedMesh == null) continue;
-            EnableReadWriteForMesh(mf.sharedMesh, ref meshCount);
+            EnableReadWriteForMesh(mf.sharedMesh, ref modifiedMeshCount);
             vertCount += mf.sharedMesh.vertexCount;
+            meshCount++;
         }
         foreach (var smr in skinnedMeshRenderers)
         {
             if (smr.sharedMesh == null) continue;
-            EnableReadWriteForMesh(smr.sharedMesh, ref meshCount);
+            EnableReadWriteForMesh(smr.sharedMesh, ref modifiedMeshCount);
             vertCount += smr.sharedMesh.vertexCount;
+            meshCount++;
         }
-        if (meshCount > 0)
+        if (modifiedMeshCount > 0)
         {
-            Debug.Log($"Enabled Read/Write mode for {meshCount} mesh(es) in prefab '{prefab.name}'.");
+            Debug.Log($"Enabled Read/Write mode for {modifiedMeshCount} mesh(es) in prefab '{prefab.name}'.");
         }
-        if (vertCount > 1000)
+
+        var maxVertCount = 2048;
+        if (vertCount > maxVertCount)
         {
-            ModdingUtils.ThrowError("Your body part's total vertex count cannot exceed 1000.");
+            ModdingUtils.ThrowError($"'{prefab.name}' exceeds the maximum allowed vertex count of {maxVertCount}. It currently has {vertCount} vertices across {meshCount} mesh(es).");
             return false;
         }
 
