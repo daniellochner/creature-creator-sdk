@@ -6,6 +6,8 @@ using UnityEditor;
 
 public static class PatternUtils
 {
+    private static float MAX_PATTERN_SIZE = 1f;
+
     public static void NewPattern()
     {
         if (ModdingUtils.TryCreateNewItem(out string patternName, out string patternPath, out PatternConfig config))
@@ -35,9 +37,15 @@ public static class PatternUtils
 
     public static void TestPattern(PatternConfig config)
     {
-        string path = ModdingUtils.GetBuildPath(config);
+        var path = ModdingUtils.GetBuildPath(config);
+        if (!Directory.Exists(path))
+        {
+            ModdingUtils.ThrowError("You have not built this pattern yet. You have to build it before testing.");
+            return;
+        }
 
-        if (IsTooLarge(path))
+        var windowsBundlePath = Path.Combine(path, "Pattern", "Bundles_WindowsPlayer");
+        if (ModdingUtils.IsTooLarge(windowsBundlePath, MAX_PATTERN_SIZE))
         {
             return;
         }
@@ -47,25 +55,18 @@ public static class PatternUtils
 
     public static void UploadPattern(PatternConfig config)
     {
-        string path = ModdingUtils.GetBuildPath(config);
+        var path = ModdingUtils.GetBuildPath(config);
+        if (!Directory.Exists(path))
+        {
+            ModdingUtils.ThrowError("You have not built this pattern yet. You have to build it before uploading.");
+            return;
+        }
 
-        if (IsTooLarge(path))
+        if (ModdingUtils.IsTooLarge(path, MAX_PATTERN_SIZE * 5f))
         {
             return;
         }
 
         ModdingUtils.StartGame(ModdingUtils.GetApplicationPath(), path, "uploadpattern");
-    }
-
-    private static bool IsTooLarge(string path)
-    {
-        var windowsBundlePath = Path.Combine(path, "Pattern", "Bundles_WindowsPlayer");
-        var maxFileSizeMB = 1f;
-        if (ModdingUtils.CheckFileSize(windowsBundlePath, maxFileSizeMB, out float fileSizeMB))
-        {
-            ModdingUtils.ThrowError($"Your custom pattern is too large! ({fileSizeMB:0.00}MB > {maxFileSizeMB:0.00}MB)");
-            return true;
-        }
-        return false;
     }
 }

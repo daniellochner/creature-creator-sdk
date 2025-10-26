@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 public static class MappingUtils
 {
+    private static float MAX_MAP_SIZE = 20f;
+
     public static void NewMap()
 	{
         if (ModdingUtils.TryCreateNewItem(out string mapName, out string mapPath, out MapConfig config))
@@ -50,15 +52,15 @@ public static class MappingUtils
 
 	public static void TestMap(MapConfig config)
 	{
-		string path = ModdingUtils.GetBuildPath(config);
-
-		if (!Directory.Exists(path))
+		var path = ModdingUtils.GetBuildPath(config);
+        if (!Directory.Exists(path))
 		{
 			ModdingUtils.ThrowError("You have not built this map yet. You have to build it before testing.");
 			return;
 		}
 
-        if (IsTooLarge(path))
+        var windowsBundlePath = Path.Combine(path, "Map", "Bundles_WindowsPlayer");
+        if (ModdingUtils.IsTooLarge(windowsBundlePath, MAX_MAP_SIZE))
         {
             return;
         }
@@ -68,8 +70,7 @@ public static class MappingUtils
 
 	public static void UploadMap(MapConfig config)
 	{
-        string path = ModdingUtils.GetBuildPath(config);
-
+        var path = ModdingUtils.GetBuildPath(config);
         if (!Directory.Exists(path))
         {
             ModdingUtils.ThrowError("You have not built this map yet. You have to build it before uploading.");
@@ -82,7 +83,7 @@ public static class MappingUtils
 			return;
 		}
 
-        if (IsTooLarge(path))
+        if (ModdingUtils.IsTooLarge(path, MAX_MAP_SIZE * 5f))
         {
             return;
         }
@@ -90,17 +91,6 @@ public static class MappingUtils
         ModdingUtils.StartGame(ModdingUtils.GetApplicationPath(), path, "uploadmap");
 	}
 
-    private static bool IsTooLarge(string path)
-    {
-        var windowsBundlePath = Path.Combine(path, "Map", "Bundles_WindowsPlayer");
-        var maxFileSizeMB = 25f;
-        if (ModdingUtils.CheckFileSize(windowsBundlePath, maxFileSizeMB, out float fileSizeMB))
-        {
-            ModdingUtils.ThrowError($"Your custom map is too large! ({fileSizeMB:0.00}MB > {maxFileSizeMB:0.00}MB)");
-            return true;
-        }
-        return false;
-    }
     public static void CheckForErrors()
     {
         if (CustomMapValidator.IsSceneValid(SceneManager.GetActiveScene(), out string error))

@@ -204,6 +204,15 @@ public static class ModdingUtils
         return Path.Combine(globalPath.Substring(Application.dataPath.Length - "Assets".Length));
     }
 
+    public static bool IsTooLarge(string path, float maxFileSizeMB)
+    {
+        if (CheckFileSize(path, maxFileSizeMB, out float fileSizeMB))
+        {
+            ThrowError($"Your mod is too large! ({fileSizeMB:0.00}MB > {maxFileSizeMB:0.00}MB)");
+            return true;
+        }
+        return false;
+    }
     public static long GetDataSize(string dataPath)
     {
         if (File.Exists(dataPath))

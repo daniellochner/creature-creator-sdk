@@ -5,6 +5,8 @@ using UnityEngine;
 
 public static class BodyPartUtils
 {
+    private static float MAX_BODYPART_SIZE = 1f;
+
     public static void NewBodyPart()
     {
         if (ModdingUtils.TryCreateNewItem(out string bodyPartName, out string bodyPartPath, out BodyPartConfig config))
@@ -44,9 +46,15 @@ public static class BodyPartUtils
 
     public static void TestBodyPart(BodyPartConfig config)
     {
-        string path = ModdingUtils.GetBuildPath(config);
+        var path = ModdingUtils.GetBuildPath(config);
+        if (!Directory.Exists(path))
+        {
+            ModdingUtils.ThrowError("You have not built this body part yet. You have to build it before testing.");
+            return;
+        }
 
-        if (IsTooLarge(path))
+        var windowsBundlePath = Path.Combine(path, "Body Part", "Bundles_WindowsPlayer");
+        if (ModdingUtils.IsTooLarge(windowsBundlePath, MAX_BODYPART_SIZE))
         {
             return;
         }
@@ -56,25 +64,18 @@ public static class BodyPartUtils
 
     public static void UploadBodyPart(BodyPartConfig config)
     {
-        string path = ModdingUtils.GetBuildPath(config);
+        var path = ModdingUtils.GetBuildPath(config);
+        if (!Directory.Exists(path))
+        {
+            ModdingUtils.ThrowError("You have not built this body part yet. You have to build it before uploading.");
+            return;
+        }
 
-        if (IsTooLarge(path))
+        if (ModdingUtils.IsTooLarge(path, MAX_BODYPART_SIZE * 5f))
         {
             return;
         }
 
         ModdingUtils.StartGame(ModdingUtils.GetApplicationPath(), path, "uploadbodypart");
-    }
-
-    private static bool IsTooLarge(string path)
-    {
-        var windowsBundlePath = Path.Combine(path, "Body Part", "Bundles_WindowsPlayer");
-        var maxFileSizeMB = 1f;
-        if (ModdingUtils.CheckFileSize(windowsBundlePath, maxFileSizeMB, out float fileSizeMB))
-        {
-            ModdingUtils.ThrowError($"Your custom body part is too large! ({fileSizeMB:0.00}MB > {maxFileSizeMB:0.00}MB)");
-            return true;
-        }
-        return false;
     }
 }
