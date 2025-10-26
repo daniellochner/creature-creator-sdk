@@ -36,20 +36,28 @@ public static class BodyPartUtils
         var meshFilters = prefab.GetComponentsInChildren<MeshFilter>(true);
         var skinnedMeshRenderers = prefab.GetComponentsInChildren<SkinnedMeshRenderer>(true);
 
+        int vertCount = 0;
         int meshCount = 0;
         foreach (var mf in meshFilters)
         {
             if (mf.sharedMesh == null) continue;
             EnableReadWriteForMesh(mf.sharedMesh, ref meshCount);
+            vertCount += mf.sharedMesh.vertexCount;
         }
         foreach (var smr in skinnedMeshRenderers)
         {
             if (smr.sharedMesh == null) continue;
             EnableReadWriteForMesh(smr.sharedMesh, ref meshCount);
+            vertCount += smr.sharedMesh.vertexCount;
         }
         if (meshCount > 0)
         {
             Debug.Log($"Enabled Read/Write mode for {meshCount} mesh(es) in prefab '{prefab.name}'.");
+        }
+        if (vertCount > 1000)
+        {
+            ModdingUtils.ThrowError("Your body part's total vertex count cannot exceed 1000.");
+            return false;
         }
 
         return ModdingUtils.TryBuildItem<BodyPartConfig, BodyPartConfigData>(config, buildAll, delegate
