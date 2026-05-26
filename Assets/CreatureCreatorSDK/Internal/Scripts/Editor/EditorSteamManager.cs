@@ -1,6 +1,7 @@
 using Steamworks;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -55,6 +56,22 @@ public static class EditorSteamManager
 
 	public static string GetInstallLocation()
 	{
-		return GetInstallFolder() + "/Creature Creator.exe";
+		return Path.Combine(GetInstallFolder(), GetApplicationName());
+	}
+
+	public static string GetApplicationName()
+	{
+		switch (Application.platform)
+		{
+			case RuntimePlatform.OSXEditor:
+				return "Creature Creator.app";
+
+			case RuntimePlatform.LinuxEditor:
+				return "Creature Creator.x86_64";
+
+			case RuntimePlatform.WindowsEditor:
+			default:
+				return "Creature Creator.exe";
+		}
 	}
 }

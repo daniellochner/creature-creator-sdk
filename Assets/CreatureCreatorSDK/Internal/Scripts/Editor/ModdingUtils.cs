@@ -11,11 +11,22 @@ public static class ModdingUtils
 {
     public static void StartGame(string applicationPath, string mapPath, string arg)
     {
+        string gameArguments = $"-{arg} \"{mapPath}\"";
         Process process = new Process();
-        process.StartInfo.FileName = applicationPath;
-        process.StartInfo.Arguments = $"-{arg} \"{mapPath}\"";
+
+        if (Application.platform == RuntimePlatform.OSXEditor && applicationPath.EndsWith(".app", StringComparison.OrdinalIgnoreCase))
+        {
+            process.StartInfo.FileName = "/usr/bin/open";
+            process.StartInfo.Arguments = $"-n \"{applicationPath}\" --args {gameArguments}";
+        }
+        else
+        {
+            process.StartInfo.FileName = applicationPath;
+            process.StartInfo.Arguments = gameArguments;
+        }
+
         process.Start();
-        Debug.Log("Starting game with arguments: " + process.StartInfo.Arguments);
+        Debug.Log("Starting game with arguments: " + gameArguments);
     }
 
     public static bool TryCreateNewItem<T>(out string itemName, out string itemPath, out T config) where T : ItemConfig
@@ -45,9 +56,18 @@ public static class ModdingUtils
     {
         if (buildAll)
         {
-            if (!BuildPipeline.IsBuildTargetSupported(default, BuildTarget.StandaloneWindows64) || !BuildPipeline.IsBuildTargetSupported(default, BuildTarget.StandaloneOSX) || !BuildPipeline.IsBuildTargetSupported(default, BuildTarget.StandaloneLinux64) || !BuildPipeline.IsBuildTargetSupported(default, BuildTarget.Android) || !BuildPipeline.IsBuildTargetSupported(default, BuildTarget.iOS))
+            if (!IsBuildTargetSupported(BuildTarget.StandaloneWindows64) || !IsBuildTargetSupported(BuildTarget.StandaloneOSX) || !IsBuildTargetSupported(BuildTarget.StandaloneLinux64) || !IsBuildTargetSupported(BuildTarget.Android) || !IsBuildTargetSupported(BuildTarget.iOS))
             {
                 ThrowError($"Please ensure the following build targets are supported by installing them through Unity Hub: {BuildTarget.StandaloneWindows64}, {BuildTarget.StandaloneOSX}, {BuildTarget.StandaloneLinux64}, {BuildTarget.Android} and {BuildTarget.iOS}.");
+                return false;
+            }
+        }
+        else
+        {
+            BuildTarget currentBuildTarget = GetBuildTarget(GetCurrentEditorPlayerPlatform());
+            if (!IsBuildTargetSupported(currentBuildTarget))
+            {
+                ThrowError($"Please install {currentBuildTarget} support through Unity Hub before building and testing on this platform.");
                 return false;
             }
         }
@@ -82,13 +102,17 @@ public static class ModdingUtils
 
         // Build asset bundles
         config.hideFlags |= HideFlags.DontUnloadUnusedAsset;
-        BuildBundlesForPlatform(config, RuntimePlatform.WindowsPlayer);
         if (buildAll)
         {
+            BuildBundlesForPlatform(config, RuntimePlatform.WindowsPlayer);
             BuildBundlesForPlatform(config, RuntimePlatform.OSXPlayer);
             BuildBundlesForPlatform(config, RuntimePlatform.LinuxPlayer);
             BuildBundlesForPlatform(config, RuntimePlatform.IPhonePlayer);
             BuildBundlesForPlatform(config, RuntimePlatform.Android);
+        }
+        else
+        {
+            BuildBundlesForPlatform(config, GetCurrentEditorPlayerPlatform());
         }
         config.hideFlags &= ~HideFlags.DontUnloadUnusedAsset;
 
@@ -114,38 +138,83 @@ public static class ModdingUtils
 
         AssetBundleBuilder.AssignBundleNames(config);
 
-        BuildTarget buildTarget = default;
-        switch (platform)
-        {
-            case RuntimePlatform.WindowsPlayer:
-                buildTarget = BuildTarget.StandaloneWindows64;
-                break;
-
-            case RuntimePlatform.OSXPlayer:
-                buildTarget = BuildTarget.StandaloneOSX;
-                break;
-
-            case RuntimePlatform.LinuxPlayer:
-                buildTarget = BuildTarget.StandaloneLinux64;
-                break;
-
-            case RuntimePlatform.IPhonePlayer:
-                buildTarget = BuildTarget.iOS;
-                break;
-
-            case RuntimePlatform.Android:
-                buildTarget = BuildTarget.Android;
-                break;
-        }
+        BuildTarget buildTarget = GetBuildTarget(platform);
 
         AssetBundleBuilder.BuildAssetBundles(config, bundleBuildPath, buildTarget);
-        
+
         AssetBundleBuilder.ClearAllAssetBundleNames();
         foreach (var file in new DirectoryInfo(bundleBuildPath).GetFiles("*.manifest"))
         {
             File.Delete(file.FullName);
         }
     }
+
+    public static RuntimePlatform GetCurrentEditorPlayerPlatform()
+    {
+        switch (Application.platform)
+        {
+            case RuntimePlatform.OSXEditor:
+                return RuntimePlatform.OSXPlayer;
+
+            case RuntimePlatform.LinuxEditor:
+                return RuntimePlatform.LinuxPlayer;
+
+            case RuntimePlatform.WindowsEditor:
+            default:
+                return RuntimePlatform.WindowsPlayer;
+        }
+    }
+
+    public static string GetBundleBuildPath(ItemConfig config, RuntimePlatform platform)
+    {
+        return GetBundleBuildPath(config) + $"_{platform}";
+    }
+
+    private static BuildTarget GetBuildTarget(RuntimePlatform platform)
+    {
+        switch (platform)
+        {
+            case RuntimePlatform.WindowsPlayer:
+                return BuildTarget.StandaloneWindows64;
+
+            case RuntimePlatform.OSXPlayer:
+                return BuildTarget.StandaloneOSX;
+
+            case RuntimePlatform.LinuxPlayer:
+                return BuildTarget.StandaloneLinux64;
+
+            case RuntimePlatform.IPhonePlayer:
+                return BuildTarget.iOS;
+
+            case RuntimePlatform.Android:
+                return BuildTarget.Android;
+
+            default:
+                ThrowError($"Unsupported build platform: {platform}");
+                return default;
+        }
+    }
+
+    private static bool IsBuildTargetSupported(BuildTarget buildTarget)
+    {
+        return BuildPipeline.IsBuildTargetSupported(GetBuildTargetGroup(buildTarget), buildTarget);
+    }
+
+    private static BuildTargetGroup GetBuildTargetGroup(BuildTarget buildTarget)
+    {
+        switch (buildTarget)
+        {
+            case BuildTarget.Android:
+                return BuildTargetGroup.Android;
+
+            case BuildTarget.iOS:
+                return BuildTargetGroup.iOS;
+
+            default:
+                return BuildTargetGroup.Standalone;
+        }
+    }
+
     public static string GetBuildPath(ItemConfig config)
     {
         return Path.Combine(Application.dataPath, "..", "Items", config.Plural, config.GetDirectoryName());
@@ -157,12 +226,16 @@ public static class ModdingUtils
 
     public static string SetApplicationPath()
     {
-        string path = EditorUtility.OpenFilePanel("Find Creature Creator.exe", EditorSteamManager.GetInstallFolder(), "exe");
+        string applicationName = EditorSteamManager.GetApplicationName();
+        string extension = Application.platform == RuntimePlatform.OSXEditor
+            ? "app"
+            : Application.platform == RuntimePlatform.WindowsEditor ? "exe" : string.Empty;
+        string path = EditorUtility.OpenFilePanel($"Find {applicationName}", EditorSteamManager.GetInstallFolder(), extension);
 
         if (string.IsNullOrEmpty(path))
             return null;
 
-        Debug.Log("Set Creature Creator.exe path to " + path);
+        Debug.Log($"Set {applicationName} path to " + path);
 
         PlayerPrefs.SetString(Constants.PlayerPrefsApplicationPathKey, path);
         PlayerPrefs.Save();
@@ -181,18 +254,23 @@ public static class ModdingUtils
             applicationPath = EditorSteamManager.GetInstallLocation();
         }
 
-        if (!File.Exists(applicationPath))
+        if (!ApplicationPathExists(applicationPath))
         {
             Debug.LogError("The application was not found at the specified path: " + applicationPath);
             applicationPath = SetApplicationPath();
         }
 
-        if (!File.Exists(applicationPath))
+        if (!ApplicationPathExists(applicationPath))
         {
             ThrowError("The application was not found at the specified path: " + applicationPath);
         }
 
         return applicationPath;
+    }
+
+    private static bool ApplicationPathExists(string applicationPath)
+    {
+        return File.Exists(applicationPath) || Directory.Exists(applicationPath);
     }
 
     public static string ConvertLocalPathToGlobalPath(string localPath)

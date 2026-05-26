@@ -44,8 +44,8 @@ public static class PatternUtils
             return;
         }
 
-        var windowsBundlePath = Path.Combine(path, "Pattern", "Bundles_WindowsPlayer");
-        if (ModdingUtils.IsTooLarge(windowsBundlePath, MAX_PATTERN_SIZE))
+        var bundlePath = ModdingUtils.GetBundleBuildPath(config, ModdingUtils.GetCurrentEditorPlayerPlatform());
+        if (ModdingUtils.IsTooLarge(bundlePath, MAX_PATTERN_SIZE))
         {
             return;
         }

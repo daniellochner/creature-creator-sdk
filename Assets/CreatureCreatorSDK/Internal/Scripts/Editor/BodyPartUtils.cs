@@ -89,8 +89,8 @@ public static class BodyPartUtils
             return;
         }
 
-        var windowsBundlePath = Path.Combine(path, "Body Part", "Bundles_WindowsPlayer");
-        if (ModdingUtils.IsTooLarge(windowsBundlePath, MAX_BODYPART_SIZE))
+        var bundlePath = ModdingUtils.GetBundleBuildPath(config, ModdingUtils.GetCurrentEditorPlayerPlatform());
+        if (ModdingUtils.IsTooLarge(bundlePath, MAX_BODYPART_SIZE))
         {
             return;
         }

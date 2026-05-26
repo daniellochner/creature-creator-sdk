@@ -14,7 +14,7 @@ Great! You are now all setup and ready to get started!
 Before we begin creating our own mods, let's test the examples to see if everything is working as expected.
 1. Go to your project window and double click on the `Example.unity` scene file in `Assets/Items/Maps/Example/` to load the example map.
 2. Next, select the config file and navigate to the top menu bar again and click on "Creature Creator > Build and Test". This will start the build process for the map, as well as the unlockable part and pattern, which are referenced as dependencies in the config file.
-3. Once completed, the executable will be launched with command-line arguments pointing to your mod! Note that if the executable cannot be found, click "Creature Creator > Locate Creature Creator.exe". The application should be installed in the `~/Steam/steamapps/common/` directory.
+3. Once completed, the game will be launched with command-line arguments pointing to your mod! Note that if the application cannot be found, click "Creature Creator > Locate Creature Creator". On Windows, select `Creature Creator.exe`; on macOS, select `Creature Creator.app`. The application should be installed in your Steam `steamapps/common` directory.
 The game should now open and load the example map in Adventure mode!
 
 # 🎨 Creating Mods

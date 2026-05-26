@@ -13,7 +13,7 @@ public class ModdingMenus : MonoBehaviour
 		EditorSteamManager.ConnectToSteam();
 	}
 
-	[MenuItem("Creature Creator/Locate Creature Creator.exe", priority = 102)]
+	[MenuItem("Creature Creator/Locate Creature Creator", priority = 102)]
 	public static void LocateExe()
 	{
         ModdingUtils.SetApplicationPath();
