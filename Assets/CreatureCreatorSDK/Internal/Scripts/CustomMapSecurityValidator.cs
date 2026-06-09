@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System;
+using Unity.AI.Navigation;
+using UnityEngine.AI;
 
 public static class CustomMapSecurityValidator
 {
@@ -49,7 +51,10 @@ public static class CustomMapSecurityValidator
 		typeof(WindZone),
 		typeof(WaterProxy),
 		typeof(UnlockableBodyPartProxy),
-		typeof(UnlockablePatternProxy)
+		typeof(UnlockablePatternProxy),
+		typeof(NavMeshSurface),
+		typeof(NavMeshLink),
+		typeof(NavMeshObstacle)
     };
 
 	public static bool IsGameObjectValid(GameObject go, out string error)
