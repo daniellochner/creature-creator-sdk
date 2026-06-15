@@ -4,7 +4,8 @@ using UnityEngine;
 public class WaterProxy : ProxyBehaviour
 {
     public bool allowSwimming = true;
-    public GameObject customSplashFX;
+    public WaterType type;
+    public GameObject customSplashPrefab;
 
     public static List<WaterProxy> Proxies { get; private set; } = new ();
 
@@ -15,5 +16,12 @@ public class WaterProxy : ProxyBehaviour
     private void OnDisable()
     {
         Proxies.Remove(this);
+    }
+
+    public enum WaterType
+    {
+        Empty,
+        Ocean,
+        Lake
     }
 }
