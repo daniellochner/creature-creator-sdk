@@ -54,7 +54,11 @@ public static class CustomMapSecurityValidator
 		typeof(UnlockablePatternProxy),
 		typeof(NavMeshSurface),
 		typeof(NavMeshLink),
-		typeof(NavMeshObstacle)
+		typeof(NavMeshObstacle),
+		typeof(FoodSpawnerProxy),
+		typeof(FoodProxy),
+		typeof(ZoneProxy),
+		typeof(DisplaySpawnerProxy)
     };
 
 	public static bool IsGameObjectValid(GameObject go, out string error)
