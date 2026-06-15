@@ -16,4 +16,11 @@ public class ZoneProxy : ProxyBehaviour
     {
         Proxies.Remove(this);
     }
+
+    protected override void OnDrawGizmosSelected()
+    {
+        base.OnDrawGizmosSelected();
+
+        Gizmos.DrawWireCube(transform.position, transform.localScale * 10f);
+    }
 }
