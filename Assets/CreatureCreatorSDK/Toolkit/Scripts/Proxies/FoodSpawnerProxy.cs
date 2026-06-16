@@ -15,14 +15,36 @@ namespace DanielLochner.CreatureCrafter.SDK
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            if (string.IsNullOrEmpty(spawnerId))
+            // Don't assign to the prefab asset.
+            if (UnityEditor.PrefabUtility.IsPartOfPrefabAsset(this))
+            {
+                return;
+            }
+
+            // Regenerate when empty, or when another proxy already uses this id (e.g. after duplicating this object).
+            if (string.IsNullOrEmpty(spawnerId) || HasDuplicateId())
             {
                 spawnerId = Guid.NewGuid().ToString();
             }
         }
+        private bool HasDuplicateId()
+        {
+            foreach (var other in FindObjectsByType<FoodSpawnerProxy>(FindObjectsSortMode.None))
+            {
+                if (other != this && other.spawnerId == spawnerId)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 #endif
         private void OnEnable()
         {
+            if (string.IsNullOrEmpty(spawnerId) || Proxies.ContainsKey(spawnerId))
+            {
+                spawnerId = Guid.NewGuid().ToString();
+            }
             Proxies.Add(spawnerId, this);
         }
         private void OnDisable()
