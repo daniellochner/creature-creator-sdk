@@ -1,14 +1,14 @@
 using UnityEngine;
 using Newtonsoft.Json;
-using DanielLochner.Assets.CreatureCreator;
 using System.Collections.Generic;
-using static DanielLochner.Assets.CreatureCreator.BodyPartConfigData;
+using DanielLochner.CreatureCrafter.SDK;
+using static DanielLochner.CreatureCrafter.SDK.BodyPartConfigData;
 
 public class BodyPartConfig : ItemConfig
 {
     [Header("Body Part")]
     public SaveType type;
-    public Diet diet;
+    public DietType diet;
     public int complexity;
     public int health;
     public float weight;

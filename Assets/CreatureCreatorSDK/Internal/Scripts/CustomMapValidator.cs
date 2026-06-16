@@ -1,24 +1,27 @@
 using UnityEngine.SceneManagement;
 
-public static class CustomMapValidator
+namespace DanielLochner.CreatureCrafter.SDK
 {
-	public static bool IsSceneValid(Scene scene, out string error)
+	public static class CustomMapValidator
 	{
-		if(!CustomMapSecurityValidator.IsSceneValid(scene, out error))
+		public static bool IsSceneValid(Scene scene, out string error)
 		{
-			return false;
-		}
+			if(!CustomMapSecurityValidator.IsSceneValid(scene, out error))
+			{
+				return false;
+			}
 
-		if(!CustomMapRequiredComponentsValidator.IsSceneValid(scene, out error))
-		{
-			return false;
-		}
+			if(!CustomMapRequiredComponentsValidator.IsSceneValid(scene, out error))
+			{
+				return false;
+			}
 
-		if(!CustomMapErrorValidator.IsSceneValid(scene, out error))
-		{
-			return false;
-		}
+			if(!CustomMapErrorValidator.IsSceneValid(scene, out error))
+			{
+				return false;
+			}
 
-		return true;
+			return true;
+		}
 	}
 }

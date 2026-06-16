@@ -1,6 +1,9 @@
 using UnityEngine;
 
-public class SetTag : MonoBehaviour
+namespace DanielLochner.CreatureCrafter.SDK
 {
-    public string tagName;
+    public class SetTag : MonoBehaviour
+    {
+        public string tagName;
+    }
 }

@@ -1,27 +1,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WaterProxy : ProxyBehaviour
+namespace DanielLochner.CreatureCrafter.SDK
 {
-    public bool allowSwimming = true;
-    public WaterType type;
-    public GameObject customSplashPrefab;
-
-    public static List<WaterProxy> Proxies { get; private set; } = new ();
-
-    private void OnEnable()
+    public class WaterProxy : ProxyBehaviour
     {
-        Proxies.Add(this);
-    }
-    private void OnDisable()
-    {
-        Proxies.Remove(this);
-    }
+        public bool allowSwimming = true;
+        public WaterType type;
+        public GameObject customSplashPrefab;
 
-    public enum WaterType
-    {
-        Empty,
-        Ocean,
-        Lake
+        public static List<WaterProxy> Proxies { get; private set; } = new ();
+
+        private void OnEnable()
+        {
+            Proxies.Add(this);
+        }
+        private void OnDisable()
+        {
+            Proxies.Remove(this);
+        }
+
+        public enum WaterType
+        {
+            Empty,
+            Ocean,
+            Lake
+        }
     }
 }

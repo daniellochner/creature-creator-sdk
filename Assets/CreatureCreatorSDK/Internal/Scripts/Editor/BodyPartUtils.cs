@@ -1,8 +1,8 @@
 using System.IO;
 using System.Linq;
-using DanielLochner.Assets.CreatureCreator;
 using UnityEditor;
 using UnityEngine;
+using DanielLochner.CreatureCrafter.SDK;
 
 public static class BodyPartUtils
 {

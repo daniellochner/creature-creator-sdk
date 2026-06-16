@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UnlockableItemProxy : ProxyBehaviour
+namespace DanielLochner.CreatureCrafter.SDK
 {
-    public string itemId;
+    public class UnlockableItemProxy : ProxyBehaviour
+    {
+        public string itemId;
+    }
 }

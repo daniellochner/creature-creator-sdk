@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System;
+using DanielLochner.CreatureCrafter.SDK;
 
 public class MapConfig : ItemConfig
 {

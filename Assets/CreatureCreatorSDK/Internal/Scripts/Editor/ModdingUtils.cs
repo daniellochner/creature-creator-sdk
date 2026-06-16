@@ -6,6 +6,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
+using DanielLochner.CreatureCrafter.SDK;
 
 public static class ModdingUtils
 {

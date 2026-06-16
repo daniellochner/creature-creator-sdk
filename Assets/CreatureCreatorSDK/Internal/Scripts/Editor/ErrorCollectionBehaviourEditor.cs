@@ -2,41 +2,44 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(ErrorCollectionBehaviour), true), CanEditMultipleObjects]
-public class ErrorCollectionBehaviourEditor : Editor
+namespace DanielLochner.CreatureCrafter.SDK
 {
-	List<string> errors = new List<string>();
-
-	public override void OnInspectorGUI()
+	[CustomEditor(typeof(ErrorCollectionBehaviour), true), CanEditMultipleObjects]
+	public class ErrorCollectionBehaviourEditor : Editor
 	{
-		base.OnInspectorGUI();
-		RunErrorChecks();
-	}
+		List<string> errors = new List<string>();
 
-	public void RunErrorChecks()
-	{
-		errors.Clear();
-
-		((ErrorCollectionBehaviour)target).RunErrorChecks(ref errors);
-
-		if(errors.Count > 0)
+		public override void OnInspectorGUI()
 		{
-			EditorGUILayout.BeginVertical("Box");
+			base.OnInspectorGUI();
+			RunErrorChecks();
+		}
 
-			var color = GUI.color;
-			GUI.color = new Color(1, 1, 0);
-			EditorGUI.indentLevel = 0;
-			EditorGUILayout.LabelField($"{errors.Count} Unresolved Issue{(errors.Count == 1 ? "" : "s")}", EditorStyles.boldLabel);
-			GUI.color = color;
+		public void RunErrorChecks()
+		{
+			errors.Clear();
 
-			EditorGUI.indentLevel = 1;
-			foreach(var error in errors)
+			((ErrorCollectionBehaviour)target).RunErrorChecks(ref errors);
+
+			if(errors.Count > 0)
 			{
-				EditorGUILayout.LabelField($"• {error}", EditorStyles.wordWrappedLabel);
-			}
+				EditorGUILayout.BeginVertical("Box");
 
-			EditorGUI.indentLevel = 0;
-			EditorGUILayout.EndVertical();
+				var color = GUI.color;
+				GUI.color = new Color(1, 1, 0);
+				EditorGUI.indentLevel = 0;
+				EditorGUILayout.LabelField($"{errors.Count} Unresolved Issue{(errors.Count == 1 ? "" : "s")}", EditorStyles.boldLabel);
+				GUI.color = color;
+
+				EditorGUI.indentLevel = 1;
+				foreach(var error in errors)
+				{
+					EditorGUILayout.LabelField($"• {error}", EditorStyles.wordWrappedLabel);
+				}
+
+				EditorGUI.indentLevel = 0;
+				EditorGUILayout.EndVertical();
+			}
 		}
 	}
 }

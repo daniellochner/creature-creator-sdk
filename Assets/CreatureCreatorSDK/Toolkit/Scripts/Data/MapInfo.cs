@@ -1,22 +1,24 @@
-
 using UnityEngine;
 
-[ExecuteInEditMode]
-public class MapInfo : MonoBehaviour
+namespace DanielLochner.CreatureCrafter.SDK
 {
-    [Header("Minimap")]
-    public Texture minimapImage;
-    public float minimapSize;
-
-    public bool IsValidMinimap => (minimapImage != null) && (minimapSize > 0);
-
-    private void Update()
+    [ExecuteInEditMode]
+    public class MapInfo : MonoBehaviour
     {
-#if UNITY_EDITOR
-        if (transform.childCount > 0)
+        [Header("Minimap")]
+        public Texture minimapImage;
+        public float minimapSize;
+
+        public bool IsValidMinimap => (minimapImage != null) && (minimapSize > 0);
+
+        private void Update()
         {
-            transform.GetChild(0).gameObject.SetActive(UnityEditor.Selection.activeGameObject == gameObject && IsValidMinimap);
-        }
+#if UNITY_EDITOR
+            if (transform.childCount > 0)
+            {
+                transform.GetChild(0).gameObject.SetActive(UnityEditor.Selection.activeGameObject == gameObject && IsValidMinimap);
+            }
 #endif
+        }
     }
 }

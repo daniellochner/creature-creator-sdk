@@ -1,19 +1,22 @@
 using UnityEngine;
 
-[ExecuteInEditMode]
-public class MinimapVisual : MonoBehaviour
+namespace DanielLochner.CreatureCrafter.SDK
 {
-    public Material minimapVisualMaterial;
-
-    private MapInfo mapInfo;
-
-    private void Awake()
+    [ExecuteInEditMode]
+    public class MinimapVisual : MonoBehaviour
     {
-        mapInfo = GetComponentInParent<MapInfo>();
-    }
-    private void Update()
-    {
-        minimapVisualMaterial.mainTexture = mapInfo.minimapImage;
-        transform.localScale = Vector3.one * mapInfo.minimapSize;
+        public Material minimapVisualMaterial;
+
+        private MapInfo mapInfo;
+
+        private void Awake()
+        {
+            mapInfo = GetComponentInParent<MapInfo>();
+        }
+        private void Update()
+        {
+            minimapVisualMaterial.mainTexture = mapInfo.minimapImage;
+            transform.localScale = Vector3.one * mapInfo.minimapSize;
+        }
     }
 }

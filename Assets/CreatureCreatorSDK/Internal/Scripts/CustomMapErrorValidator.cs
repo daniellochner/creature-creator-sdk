@@ -3,53 +3,56 @@ using System.Text;
 using UnityEditor;
 using UnityEngine.SceneManagement;
 
-public static class CustomMapErrorValidator
+namespace DanielLochner.CreatureCrafter.SDK
 {
-	public static bool IsSceneValid(Scene scene, out string error)
+	public static class CustomMapErrorValidator
 	{
-		Dictionary<ErrorCollectionBehaviour, List<string>> errorsPerGameObject = new Dictionary<ErrorCollectionBehaviour, List<string>>();
-
-		foreach(var root in scene.GetRootGameObjects())
+		public static bool IsSceneValid(Scene scene, out string error)
 		{
-			foreach(var errorChecker in root.GetComponentsInChildren<ErrorCollectionBehaviour>(true))
+			Dictionary<ErrorCollectionBehaviour, List<string>> errorsPerGameObject = new Dictionary<ErrorCollectionBehaviour, List<string>>();
+
+			foreach(var root in scene.GetRootGameObjects())
 			{
-				if(!errorsPerGameObject.ContainsKey(errorChecker))
+				foreach(var errorChecker in root.GetComponentsInChildren<ErrorCollectionBehaviour>(true))
 				{
-					errorsPerGameObject[errorChecker] = new List<string>();
+					if(!errorsPerGameObject.ContainsKey(errorChecker))
+					{
+						errorsPerGameObject[errorChecker] = new List<string>();
+					}
+
+					List<string> errors = errorsPerGameObject[errorChecker];
+
+					errorChecker.RunErrorChecks(ref errors);
+
+					errorsPerGameObject[errorChecker] = errors;
 				}
-
-				List<string> errors = errorsPerGameObject[errorChecker];
-
-				errorChecker.RunErrorChecks(ref errors);
-
-				errorsPerGameObject[errorChecker] = errors;
 			}
-		}
 
-		var sb = new StringBuilder();
+			var sb = new StringBuilder();
 
-		bool first = true;
+			bool first = true;
 
-		foreach(var kvp in errorsPerGameObject)
-		{
-			foreach(var err in kvp.Value)
+			foreach(var kvp in errorsPerGameObject)
 			{
-#if UNITY_EDITOR
-				if(first)
+				foreach(var err in kvp.Value)
 				{
-					Selection.activeGameObject = kvp.Key.gameObject;
-					EditorGUIUtility.PingObject(kvp.Key.gameObject);
-					first = false;
+	#if UNITY_EDITOR
+					if(first)
+					{
+						Selection.activeGameObject = kvp.Key.gameObject;
+						EditorGUIUtility.PingObject(kvp.Key.gameObject);
+						first = false;
+					}
+	#endif
+
+					sb.AppendLine(kvp.Key + ": " + err);
+					sb.AppendLine();
 				}
-#endif
-
-				sb.AppendLine(kvp.Key + ": " + err);
-				sb.AppendLine();
 			}
+
+			error = sb.ToString();
+
+			return string.IsNullOrEmpty(error);
 		}
-
-		error = sb.ToString();
-
-		return string.IsNullOrEmpty(error);
 	}
 }

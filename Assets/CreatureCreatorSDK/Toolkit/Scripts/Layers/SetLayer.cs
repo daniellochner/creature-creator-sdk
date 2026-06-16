@@ -1,7 +1,10 @@
 using UnityEngine;
 
-public class SetLayer : MonoBehaviour
+namespace DanielLochner.CreatureCrafter.SDK
 {
-    public bool includeChildren;
-    public string layerName;
+    public class SetLayer : MonoBehaviour
+    {
+        public bool includeChildren;
+        public string layerName;
+    }
 }

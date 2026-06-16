@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using System;
 
-[Serializable]
-public class MapConfigData : ItemConfigData
+namespace DanielLochner.CreatureCrafter.SDK
 {
-    public List<string> BodyPartIds;
-    public List<string> PatternIds;
+    [Serializable]
+    public class MapConfigData : ItemConfigData
+    {
+        public List<string> BodyPartIds;
+        public List<string> PatternIds;
 
-    public override string Singular => "Map";
+        public override string Singular => "Map";
+    }
 }

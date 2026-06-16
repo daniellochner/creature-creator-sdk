@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
+using DanielLochner.CreatureCrafter.SDK;
 
 public class PatternConfig : ItemConfig
 {

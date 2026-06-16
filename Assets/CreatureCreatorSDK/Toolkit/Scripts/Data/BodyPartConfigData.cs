@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System;
 
-namespace DanielLochner.Assets.CreatureCreator
+namespace DanielLochner.CreatureCrafter.SDK
 {
     [Serializable]
     public class BodyPartConfigData : ItemConfigData
     {
         public SaveType Type;
-        public Diet Diet;
+        public DietType Diet;
         public int Complexity;
         public int Health;
         public float Weight;
@@ -15,6 +15,14 @@ namespace DanielLochner.Assets.CreatureCreator
         public List<AbilityType> Abilities;
 
         public override string Singular => "Body Part";
+
+        public enum DietType
+        {
+            None,
+            Omnivore,
+            Carnivore,
+            Herbivore
+        }
 
         public enum SaveType
         {

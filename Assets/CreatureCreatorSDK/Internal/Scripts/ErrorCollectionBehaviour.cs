@@ -2,10 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class ErrorCollectionBehaviour : MonoBehaviour
+namespace DanielLochner.CreatureCrafter.SDK
 {
-	public virtual void RunErrorChecks(ref List<string> errors)
+	public abstract class ErrorCollectionBehaviour : MonoBehaviour
 	{
+		public virtual void RunErrorChecks(ref List<string> errors)
+		{
 
+		}
 	}
 }

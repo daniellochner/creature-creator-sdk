@@ -1,23 +1,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlatformProxy : ProxyBehaviour
+namespace DanielLochner.CreatureCrafter.SDK
 {
-    private Transform Model => transform.GetChild(0);
-
-    private void Update()
+    public class PlatformProxy : ProxyBehaviour
     {
-        Model.localPosition = Vector3.zero;
-    }
+        private Transform Model => transform.GetChild(0);
 
-    public static List<PlatformProxy> Proxies { get; private set; } = new ();
+        private void Update()
+        {
+            Model.localPosition = Vector3.zero;
+        }
 
-    private void OnEnable()
-    {
-        Proxies.Add(this);
-    }
-    private void OnDisable()
-    {
-        Proxies.Remove(this);
+        public static List<PlatformProxy> Proxies { get; private set; } = new ();
+
+        private void OnEnable()
+        {
+            Proxies.Add(this);
+        }
+        private void OnDisable()
+        {
+            Proxies.Remove(this);
+        }
     }
 }

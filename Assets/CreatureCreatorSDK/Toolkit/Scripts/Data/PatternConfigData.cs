@@ -1,7 +1,10 @@
 using System;
 
-[Serializable]
-public class PatternConfigData : ItemConfigData
+namespace DanielLochner.CreatureCrafter.SDK
 {
-    public override string Singular => "Pattern";
+    [Serializable]
+    public class PatternConfigData : ItemConfigData
+    {
+        public override string Singular => "Pattern";
+    }
 }

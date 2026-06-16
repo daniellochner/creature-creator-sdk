@@ -1,8 +1,8 @@
 using System.IO;
 using UnityEngine;
 using Newtonsoft.Json;
-using DanielLochner.Assets.CreatureCreator;
 using UnityEditor;
+using DanielLochner.CreatureCrafter.SDK;
 
 public static class PatternUtils
 {

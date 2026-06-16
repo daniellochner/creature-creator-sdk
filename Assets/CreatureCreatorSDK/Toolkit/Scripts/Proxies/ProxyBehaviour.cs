@@ -1,17 +1,20 @@
 using UnityEngine;
 
-[SelectionBase]
-public class ProxyBehaviour : MonoBehaviour
+namespace DanielLochner.CreatureCrafter.SDK
 {
-    protected virtual void OnDrawGizmos()
+    [SelectionBase]
+    public class ProxyBehaviour : MonoBehaviour
     {
-    }
-    protected virtual void OnDrawGizmosSelected()
-    {
-    }
+        protected virtual void OnDrawGizmos()
+        {
+        }
+        protected virtual void OnDrawGizmosSelected()
+        {
+        }
 
-    public virtual bool IsValid()
-    {
-        return true;
+        public virtual bool IsValid()
+        {
+            return true;
+        }
     }
 }

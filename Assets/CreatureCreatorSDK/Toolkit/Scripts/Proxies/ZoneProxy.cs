@@ -2,25 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ZoneProxy : ProxyBehaviour
+namespace DanielLochner.CreatureCrafter.SDK
 {
-    public new string name;
-
-    public static List<ZoneProxy> Proxies { get; private set; } = new ();
-
-    private void OnEnable()
+    public class ZoneProxy : ProxyBehaviour
     {
-        Proxies.Add(this);
-    }
-    private void OnDisable()
-    {
-        Proxies.Remove(this);
-    }
+        public new string name;
 
-    protected override void OnDrawGizmosSelected()
-    {
-        base.OnDrawGizmosSelected();
+        public static List<ZoneProxy> Proxies { get; private set; } = new ();
 
-        Gizmos.DrawWireCube(transform.position, transform.localScale * 10f);
+        private void OnEnable()
+        {
+            Proxies.Add(this);
+        }
+        private void OnDisable()
+        {
+            Proxies.Remove(this);
+        }
+
+        protected override void OnDrawGizmosSelected()
+        {
+            base.OnDrawGizmosSelected();
+
+            Gizmos.DrawWireCube(transform.position, transform.localScale * 10f);
+        }
     }
 }

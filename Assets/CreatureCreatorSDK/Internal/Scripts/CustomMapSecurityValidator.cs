@@ -6,125 +6,128 @@ using System;
 using Unity.AI.Navigation;
 using UnityEngine.AI;
 
-public static class CustomMapSecurityValidator
+namespace DanielLochner.CreatureCrafter.SDK
 {
-	static Type[] whitelistedComponents = {
-		typeof(Transform),
-		typeof(Collider),
-		typeof(MeshFilter),
-		typeof(Renderer),
-		typeof(AudioSource),
-		typeof(AudioReverbZone),
-		typeof(AudioListener),
-		typeof(ReflectionProbe),
-		typeof(LightProbes),
-		typeof(LightProbeGroup),
-		typeof(ParticleSystem),
-		typeof(ParticleSystemForceField),
-		typeof(TrailRenderer),
-		typeof(LineRenderer),
-		typeof(Canvas),
-		typeof(CanvasScaler),
-		typeof(TextMeshProUGUI),
-		typeof(CanvasRenderer),
-		typeof(Camera),
-		typeof(Light),
-		typeof(MapInfo),
-		typeof(Animator),
-		typeof(Activator),
-		typeof(Text),
-		typeof(Rigidbody),
-		typeof(Outline),
-		typeof(Shadow),
-		typeof(Image),
-		typeof(RawImage),
-		typeof(VerticalLayoutGroup),
-		typeof(HorizontalLayoutGroup),
-		typeof(CanvasGroup),
-		typeof(TMP_Text),
-		typeof(Terrain),
-		typeof(TerrainCollider),
-		typeof(PlatformProxy),
-		typeof(SetLayer),
-		typeof(SetTag),
-		typeof(MinimapVisual),
-		typeof(WindZone),
-		typeof(WaterProxy),
-		typeof(UnlockableBodyPartProxy),
-		typeof(UnlockablePatternProxy),
-		typeof(NavMeshSurface),
-		typeof(NavMeshLink),
-		typeof(NavMeshObstacle),
-		typeof(FoodSpawnerProxy),
-		typeof(FoodProxy),
-		typeof(ZoneProxy),
-		typeof(DisplaySpawnerProxy)
-    };
-
-	public static bool IsGameObjectValid(GameObject go, out string error)
+	public static class CustomMapSecurityValidator
 	{
-		foreach(var component in go.GetComponentsInChildren(typeof(Component), true))
+		static Type[] whitelistedComponents = {
+			typeof(Transform),
+			typeof(Collider),
+			typeof(MeshFilter),
+			typeof(Renderer),
+			typeof(AudioSource),
+			typeof(AudioReverbZone),
+			typeof(AudioListener),
+			typeof(ReflectionProbe),
+			typeof(LightProbes),
+			typeof(LightProbeGroup),
+			typeof(ParticleSystem),
+			typeof(ParticleSystemForceField),
+			typeof(TrailRenderer),
+			typeof(LineRenderer),
+			typeof(Canvas),
+			typeof(CanvasScaler),
+			typeof(TextMeshProUGUI),
+			typeof(CanvasRenderer),
+			typeof(Camera),
+			typeof(Light),
+			typeof(MapInfo),
+			typeof(Animator),
+			typeof(Activator),
+			typeof(Text),
+			typeof(Rigidbody),
+			typeof(Outline),
+			typeof(Shadow),
+			typeof(Image),
+			typeof(RawImage),
+			typeof(VerticalLayoutGroup),
+			typeof(HorizontalLayoutGroup),
+			typeof(CanvasGroup),
+			typeof(TMP_Text),
+			typeof(Terrain),
+			typeof(TerrainCollider),
+			typeof(PlatformProxy),
+			typeof(SetLayer),
+			typeof(SetTag),
+			typeof(MinimapVisual),
+			typeof(WindZone),
+			typeof(WaterProxy),
+			typeof(UnlockableBodyPartProxy),
+			typeof(UnlockablePatternProxy),
+			typeof(NavMeshSurface),
+			typeof(NavMeshLink),
+			typeof(NavMeshObstacle),
+			typeof(FoodSpawnerProxy),
+			typeof(FoodProxy),
+			typeof(ZoneProxy),
+			typeof(DisplaySpawnerProxy)
+		};
+
+		public static bool IsGameObjectValid(GameObject go, out string error)
 		{
-			// can't be illegal if it doesn't exist
-			if(component == null)
+			foreach(var component in go.GetComponentsInChildren(typeof(Component), true))
 			{
-				continue;
-			}
-
-			bool isSafe = false;
-
-			// go through all whitelisted components
-			// if it matches a single one, we're ok!
-			foreach(var type in whitelistedComponents)
-			{
-				if(type.IsInstanceOfType(component))
+				// can't be illegal if it doesn't exist
+				if(component == null)
 				{
-					isSafe = true;
-					break;
+					continue;
+				}
+
+				bool isSafe = false;
+
+				// go through all whitelisted components
+				// if it matches a single one, we're ok!
+				foreach(var type in whitelistedComponents)
+				{
+					if(type.IsInstanceOfType(component))
+					{
+						isSafe = true;
+						break;
+					}
+				}
+
+				if(!isSafe)
+				{
+					error = $"{component.gameObject} contains a non-whitelisted component ({component.GetType()})";
+					return false;
 				}
 			}
 
-			if(!isSafe)
-			{
-				error = $"{component.gameObject} contains a non-whitelisted component ({component.GetType()})";
-				return false;
-			}
+			error = "";
+			return true;
 		}
 
-		error = "";
-		return true;
-	}
-
-	public static bool IsSceneValid(Scene scene, out string error)
-	{
-		foreach(var root in scene.GetRootGameObjects())
+		public static bool IsSceneValid(Scene scene, out string error)
 		{
-			if(!IsGameObjectValid(root, out error))
+			foreach(var root in scene.GetRootGameObjects())
 			{
-				return false;
-			}
-		}
-
-		error = "";
-		return true;
-	}
-
-	public static void SanitizeAnimators(Scene scene)
-	{
-		foreach(var root in scene.GetRootGameObjects())
-		{
-			foreach(Animator animator in root.GetComponentsInChildren(typeof(Animator), true))
-			{
-				animator.fireEvents = false;
-
-				if(animator.runtimeAnimatorController != null)
+				if(!IsGameObjectValid(root, out error))
 				{
-					foreach(var clip in animator.runtimeAnimatorController.animationClips)
+					return false;
+				}
+			}
+
+			error = "";
+			return true;
+		}
+
+		public static void SanitizeAnimators(Scene scene)
+		{
+			foreach(var root in scene.GetRootGameObjects())
+			{
+				foreach(Animator animator in root.GetComponentsInChildren(typeof(Animator), true))
+				{
+					animator.fireEvents = false;
+
+					if(animator.runtimeAnimatorController != null)
 					{
-						if(clip.events.Length > 0)
+						foreach(var clip in animator.runtimeAnimatorController.animationClips)
 						{
-							Debug.Log($"Animator on GameObject {animator.gameObject.name} had events which were removed.");
-							clip.events = new AnimationEvent[0];
+							if(clip.events.Length > 0)
+							{
+								Debug.Log($"Animator on GameObject {animator.gameObject.name} had events which were removed.");
+								clip.events = new AnimationEvent[0];
+							}
 						}
 					}
 				}
