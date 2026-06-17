@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace DanielLochner.CreatureCrafter.SDK
 {
-    public class DisplaySpawnerProxy : ProxyBehaviour
+    public class CreatureDisplayProxy : ProxyBehaviour
     {
         public TextAsset creatureDataAsset;
 
-        public static List<DisplaySpawnerProxy> Proxies { get; private set; } = new ();
+        public static List<CreatureDisplayProxy> Proxies { get; private set; } = new ();
 
         private void OnEnable()
         {

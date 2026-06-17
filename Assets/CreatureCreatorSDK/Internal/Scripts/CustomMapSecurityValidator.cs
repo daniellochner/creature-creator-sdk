@@ -57,10 +57,12 @@ namespace DanielLochner.CreatureCrafter.SDK
 			typeof(NavMeshSurface),
 			typeof(NavMeshLink),
 			typeof(NavMeshObstacle),
-			typeof(FoodSpawnerProxy),
-			typeof(FoodProxy),
+			typeof(SpawnerProxy),
+			typeof(CustomObjectProxy),
+			typeof(EdibleProxy),
+			typeof(HoldableProxy),
 			typeof(ZoneProxy),
-			typeof(DisplaySpawnerProxy)
+			typeof(CreatureDisplayProxy)
 		};
 
 		public static bool IsGameObjectValid(GameObject go, out string error)
