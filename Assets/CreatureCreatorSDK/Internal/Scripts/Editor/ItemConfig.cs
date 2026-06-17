@@ -19,8 +19,12 @@ public abstract class ItemConfig : ScriptableObject
     public string GetDirectory()
     {
         string path = AssetDatabase.GetAssetPath(this);
-        path = path.Substring(0, path.Length - "config.asset".Length);
-        return path;
+        if (string.IsNullOrEmpty(path))
+        {
+            ModdingUtils.ThrowError($"The {Singular.ToLower()} '{name}' is not a saved asset. Make sure every linked item points to a valid config file on disk.");
+            return null;
+        }
+        return path.Substring(0, path.Length - Path.GetFileName(path).Length);
     }
     public string GetDirectoryName()
     {
