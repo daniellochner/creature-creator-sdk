@@ -42,6 +42,16 @@ public class ModdingMenus : MonoBehaviour
 
     public static void PerformOperation(Action<MapConfig> onMap, Action<BodyPartConfig> onBodyPart, Action<PatternConfig> onPattern)
     {
+        if (BodyPartConfig.GetSelected() is BodyPartConfig bodyPartConfig)
+        {
+            onBodyPart?.Invoke(bodyPartConfig);
+        }
+        else
+        if (PatternConfig.GetSelected() is PatternConfig patternConfig)
+        {
+            onPattern?.Invoke(patternConfig);
+        }
+        else
         if (MapConfig.GetSelected() is MapConfig mapConfig)
         {
             if (mapConfig != MapConfig.GetCurrent())
@@ -54,14 +64,9 @@ public class ModdingMenus : MonoBehaviour
             }
         }
         else
-        if (BodyPartConfig.GetSelected() is BodyPartConfig bodyPartConfig)
+        if (MapConfig.GetCurrent() is MapConfig currentMap)
         {
-            onBodyPart?.Invoke(bodyPartConfig);
-        }
-        else
-        if (PatternConfig.GetSelected() is PatternConfig patternConfig)
-        {
-            onPattern?.Invoke(patternConfig);
+            onMap?.Invoke(currentMap);
         }
         else
         {
@@ -75,24 +80,7 @@ public class ModdingMenus : MonoBehaviour
     [MenuItem("Creature Creator/Upload to Workshop", true)]
     private static bool ValidateConfig()
     {
-        if (MapConfig.GetSelected() != null)
-        {
-            return true;
-        }
-        else
-        if (BodyPartConfig.GetSelected() != null)
-        {
-            return true;
-        }
-        else
-        if (PatternConfig.GetSelected() != null)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return BodyPartConfig.GetSelected() != null || PatternConfig.GetSelected() != null || MapConfig.GetSelected() != null || MapConfig.GetCurrent() != null;
     }
     #endregion
 

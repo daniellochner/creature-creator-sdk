@@ -45,20 +45,17 @@ public class MapConfig : ItemConfig
     public static MapConfig GetCurrent()
     {
         string scenePath = SceneManager.GetActiveScene().path;
+        if (string.IsNullOrEmpty(scenePath))
+        {
+            return null;
+        }
 
         int lastIndex = scenePath.LastIndexOf('/');
         string sceneFolder = scenePath.Substring(0, lastIndex);
 
         string configPath = sceneFolder + "/config.asset";
 
-        var config = AssetDatabase.LoadAssetAtPath<MapConfig>(configPath);
-
-        if (config == null)
-        {
-            throw new System.Exception($"Missing config file at {configPath}");
-        }
-
-        return config;
+        return AssetDatabase.LoadAssetAtPath<MapConfig>(configPath);
     }
 
     [Serializable]
