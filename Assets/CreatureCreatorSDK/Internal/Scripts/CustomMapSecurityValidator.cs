@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using System;
 using Unity.AI.Navigation;
 using UnityEngine.AI;
+using UnityEngine.Rendering.PostProcessing;
 
 namespace DanielLochner.CreatureCrafter.SDK
 {
@@ -62,7 +63,10 @@ namespace DanielLochner.CreatureCrafter.SDK
 			typeof(EdibleProxy),
 			typeof(HoldableProxy),
 			typeof(ZoneProxy),
-			typeof(CreatureDisplayProxy)
+			typeof(CreatureDisplayProxy),
+#if UNITY_POST_PROCESSING_STACK_V2
+			typeof(PostProcessVolume),
+#endif
 		};
 
 		public static bool IsGameObjectValid(GameObject go, out string error)
