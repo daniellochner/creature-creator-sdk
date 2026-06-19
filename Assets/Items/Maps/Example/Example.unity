@@ -434,7 +434,6 @@ GameObject:
   - component: {fileID: 520480886}
   - component: {fileID: 520480889}
   - component: {fileID: 520480888}
-  - component: {fileID: 520480887}
   m_Layer: 0
   m_Name: KillZoneVisual
   m_TagString: Untagged
@@ -457,23 +456,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1742427192}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!111 &520480887
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 520480885}
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Animation: {fileID: 7400000, guid: b9b4f94d9a561430ab734e5962c694ad, type: 2}
-  m_Animations:
-  - {fileID: 7400000, guid: d105b58997e134e00b67655d52a229ec, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_UpdateMode: 0
-  m_CullingType: 0
 --- !u!23 &520480888
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -577,7 +559,6 @@ GameObject:
   - component: {fileID: 557172508}
   - component: {fileID: 557172511}
   - component: {fileID: 557172510}
-  - component: {fileID: 557172509}
   m_Layer: 0
   m_Name: KillZoneVisual
   m_TagString: Untagged
@@ -600,23 +581,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 594685895}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!111 &557172509
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 557172507}
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Animation: {fileID: 7400000, guid: b9b4f94d9a561430ab734e5962c694ad, type: 2}
-  m_Animations:
-  - {fileID: 7400000, guid: d105b58997e134e00b67655d52a229ec, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_UpdateMode: 0
-  m_CullingType: 0
 --- !u!23 &557172510
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2299,7 +2263,6 @@ GameObject:
   - component: {fileID: 1759070921}
   - component: {fileID: 1759070924}
   - component: {fileID: 1759070923}
-  - component: {fileID: 1759070922}
   m_Layer: 0
   m_Name: KillZoneVisual
   m_TagString: Untagged
@@ -2322,23 +2285,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1516721163}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!111 &1759070922
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1759070920}
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Animation: {fileID: 7400000, guid: b9b4f94d9a561430ab734e5962c694ad, type: 2}
-  m_Animations:
-  - {fileID: 7400000, guid: d105b58997e134e00b67655d52a229ec, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_UpdateMode: 0
-  m_CullingType: 0
 --- !u!23 &1759070923
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2537,7 +2483,6 @@ GameObject:
   - component: {fileID: 2014746260}
   - component: {fileID: 2014746262}
   - component: {fileID: 2014746261}
-  - component: {fileID: 2014746263}
   m_Layer: 0
   m_Name: KillZoneVisual
   m_TagString: Untagged
@@ -2613,23 +2558,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2014746259}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!111 &2014746263
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2014746259}
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Animation: {fileID: 7400000, guid: b9b4f94d9a561430ab734e5962c694ad, type: 2}
-  m_Animations:
-  - {fileID: 7400000, guid: d105b58997e134e00b67655d52a229ec, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_UpdateMode: 0
-  m_CullingType: 0
 --- !u!1001 &2023530783
 PrefabInstance:
   m_ObjectHideFlags: 0
