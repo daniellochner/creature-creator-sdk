@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using System;
 using Unity.AI.Navigation;
 using UnityEngine.AI;
-using UnityEngine.Rendering.PostProcessing;
 
 namespace DanielLochner.CreatureCrafter.SDK
 {
@@ -67,7 +66,7 @@ namespace DanielLochner.CreatureCrafter.SDK
 			typeof(KillZoneProxy),
 			typeof(OutOfBoundsProxy),
 #if UNITY_POST_PROCESSING_STACK_V2
-			typeof(PostProcessVolume),
+			typeof(UnityEngine.Rendering.PostProcessing.PostProcessVolume),
 #endif
 		};
 
