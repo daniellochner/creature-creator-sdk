@@ -120,7 +120,7 @@ GameObject:
   - component: {fileID: 412631492800862321}
   - component: {fileID: 4600000039326349170}
   m_Layer: 0
-  m_Name: Stick
+  m_Name: Pole
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
