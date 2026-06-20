@@ -3,8 +3,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System;
-using Unity.AI.Navigation;
-using UnityEngine.AI;
 
 namespace DanielLochner.CreatureCrafter.SDK
 {
@@ -54,9 +52,6 @@ namespace DanielLochner.CreatureCrafter.SDK
 			typeof(WaterProxy),
 			typeof(UnlockableBodyPartProxy),
 			typeof(UnlockablePatternProxy),
-			typeof(NavMeshSurface),
-			typeof(NavMeshLink),
-			typeof(NavMeshObstacle),
 			typeof(SpawnerProxy),
 			typeof(CustomObjectProxy),
 			typeof(EdibleProxy),
@@ -65,8 +60,15 @@ namespace DanielLochner.CreatureCrafter.SDK
 			typeof(CreatureDisplayProxy),
 			typeof(KillZoneProxy),
 			typeof(OutOfBoundsProxy),
+
 #if UNITY_POST_PROCESSING_STACK_V2
 			typeof(UnityEngine.Rendering.PostProcessing.PostProcessVolume),
+#endif
+
+#if UNITY_NAVIGATION
+			typeof(Unity.AI.Navigation.NavMeshSurface),
+			typeof(Unity.AI.Navigation.NavMeshLink),
+			typeof(UnityEngine.AI.NavMeshObstacle),
 #endif
 		};
 
