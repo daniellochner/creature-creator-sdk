@@ -766,6 +766,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   includeChildren: 0
+  layerType: 1
   layerName: Ground
 --- !u!65 &645485258
 BoxCollider:
@@ -1802,6 +1803,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   includeChildren: 0
+  layerType: 1
   layerName: Ground
 --- !u!64 &1478156551
 MeshCollider:

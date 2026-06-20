@@ -861,7 +861,7 @@ PlayerSettings:
   webEnableSubmoduleStrippingCompatibility: 0
   scriptingDefineSymbols:
     Android: STEAMWORKS_NET
-    Standalone: STEAMWORKS_NET
+    Standalone: STEAMWORKS_NET;UNITY_NAVIGATION
     iPhone: STEAMWORKS_NET
   additionalCompilerArguments: {}
   platformArchitecture: {}
