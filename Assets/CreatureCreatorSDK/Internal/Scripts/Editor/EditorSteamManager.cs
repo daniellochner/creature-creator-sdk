@@ -64,10 +64,10 @@ public static class EditorSteamManager
 		switch (Application.platform)
 		{
 			case RuntimePlatform.OSXEditor:
-				return "Creature Creator.app";
+				return "Creature Crafter.app";
 
 			case RuntimePlatform.LinuxEditor:
-				return "Creature Creator.x86_64";
+				return "Creature Crafter.x86_64";
 
 			case RuntimePlatform.WindowsEditor:
 			default:
