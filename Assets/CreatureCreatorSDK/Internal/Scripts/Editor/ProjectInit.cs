@@ -1,10 +1,11 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 
 [InitializeOnLoad]
 public static class ProjectInit
 {
-	public const string SDKVersion = "1.8.4";
+	public const string SDKVersion = "1.8.5";
 	const string requiredVersion = "6000.1.17f1";
 
 	public static bool CanBuild { get; private set; } = true;
@@ -46,7 +47,7 @@ public static class ProjectInit
 	{
         var version = await GitHubVersionUtility.GetLatestReleaseAsync("daniellochner", "creature-creator-sdk");
 
-		if (!string.IsNullOrEmpty(version) && version != SDKVersion)
+		if (!string.IsNullOrEmpty(version) && IsVersionOutOfDate(SDKVersion, version))
 		{
             if (EditorUtility.DisplayDialog("Error", $"The current installed Creature Creator SDK (v{SDKVersion}) is out of date. Please download the new version v{version}!", "New Version"))
             {
@@ -54,4 +55,16 @@ public static class ProjectInit
             }
         }
     }
+
+	static bool IsVersionOutOfDate(string installedVersion, string latestVersion)
+	{
+		return TryParseVersion(installedVersion, out var installed) &&
+			TryParseVersion(latestVersion, out var latest) &&
+			latest.CompareTo(installed) > 0;
+	}
+
+	static bool TryParseVersion(string version, out Version parsedVersion)
+	{
+		return Version.TryParse(version.TrimStart('v', 'V'), out parsedVersion);
+	}
 }
