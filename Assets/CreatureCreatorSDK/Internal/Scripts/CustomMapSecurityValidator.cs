@@ -56,6 +56,7 @@ namespace DanielLochner.CreatureCrafter.SDK
 			typeof(CustomObjectProxy),
 			typeof(EdibleProxy),
 			typeof(HoldableProxy),
+			typeof(DamageableProxy),
 			typeof(ZoneProxy),
 			typeof(CreatureDisplayProxy),
 			typeof(KillZoneProxy),
