@@ -18,8 +18,35 @@ public class MapConfig : ItemConfig
     public override string Singular => "Map";
     public override string Plural => "Maps";
 
+    private void OnEnable()
+    {
+        EnsureInitialized();
+    }
+
+    public void EnsureInitialized()
+    {
+        if (linkedBodyParts == null)
+        {
+            linkedBodyParts = new List<LinkedItem>();
+        }
+        if (linkedPatterns == null)
+        {
+            linkedPatterns = new List<LinkedItem>();
+        }
+        if (bodyPartIds == null)
+        {
+            bodyPartIds = new List<string>();
+        }
+        if (patternIds == null)
+        {
+            patternIds = new List<string>();
+        }
+    }
+
 	public override string GetJSON()
 	{
+        EnsureInitialized();
+
         var config = new MapConfigData
         {
             SDKVersion = ProjectInit.SDKVersion,

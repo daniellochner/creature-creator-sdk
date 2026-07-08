@@ -178,6 +178,8 @@ public static class MappingUtils
     }
     public static void UpdateUnlockables(MapConfig config)
     {
+        config.EnsureInitialized();
+
         config.bodyPartIds.Clear();
         foreach (var bodyPartProxy in Object.FindObjectsByType<UnlockableBodyPartProxy>(FindObjectsSortMode.None))
         {

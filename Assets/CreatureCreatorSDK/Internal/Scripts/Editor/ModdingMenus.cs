@@ -93,14 +93,40 @@ public class ModdingMenus : MonoBehaviour
 
     private static bool TryBuildMapDependencies(MapConfig config)
     {
+        config.EnsureInitialized();
+
         foreach (var bodyPart in config.linkedBodyParts)
         {
-            BuildBodyPart(bodyPart.config as BodyPartConfig);
+            if (bodyPart == null || bodyPart.config == null)
+            {
+                continue;
+            }
+
+            BodyPartConfig bodyPartConfig = bodyPart.config as BodyPartConfig;
+            if (bodyPartConfig == null)
+            {
+                ModdingUtils.ThrowError("A linked body part points to a config that is not a body part.");
+                return false;
+            }
+
+            BuildBodyPart(bodyPartConfig);
             SetupLinkedItem(bodyPart);
         }
         foreach (var pattern in config.linkedPatterns)
         {
-            BuildPattern(pattern.config as PatternConfig);
+            if (pattern == null || pattern.config == null)
+            {
+                continue;
+            }
+
+            PatternConfig patternConfig = pattern.config as PatternConfig;
+            if (patternConfig == null)
+            {
+                ModdingUtils.ThrowError("A linked pattern points to a config that is not a pattern.");
+                return false;
+            }
+
+            BuildPattern(patternConfig);
             SetupLinkedItem(pattern);
         }
         return true;
