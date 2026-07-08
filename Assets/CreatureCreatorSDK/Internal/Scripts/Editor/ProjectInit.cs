@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.Build;
+using UnityEditor.PackageManager;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 
 [InitializeOnLoad]
@@ -13,6 +15,10 @@ public static class ProjectInit
 	// Marker type from the "com.unity.ai.navigation" package.
 	const string NavigationDefine = "UNITY_NAVIGATION";
 	const string NavigationMarkerType = "Unity.AI.Navigation.NavMeshSurface, Unity.AI.Navigation";
+	const string NavigationPackageSpec = "com.unity.ai.navigation@2.0.8";
+	const string NavigationInstallSessionKey = "CreatureCreatorSDK.NavigationInstallRequested";
+
+	static AddRequest navigationInstallRequest;
 
 	public static bool CanBuild { get; private set; } = true;
 
@@ -24,6 +30,7 @@ public static class ProjectInit
 	static void Start()
 	{
 		SetPlayerSettings();
+		EnsureNavigationPackageInstalled();
 		UpdateScriptingDefines();
 		CheckEditorVersion();
 		CheckSDKVersion();
@@ -43,6 +50,43 @@ public static class ProjectInit
 		// Detect by type so this editor script compiles whether or not the package is installed.
 		bool navigationInstalled = Type.GetType(NavigationMarkerType) != null;
 		SetScriptingDefine(NavigationDefine, navigationInstalled);
+	}
+
+	static void EnsureNavigationPackageInstalled()
+	{
+		if (Type.GetType(NavigationMarkerType) != null ||
+			navigationInstallRequest != null ||
+			SessionState.GetBool(NavigationInstallSessionKey, false))
+		{
+			return;
+		}
+
+		Debug.Log($"Creature Creator SDK requires {NavigationPackageSpec}. Installing through Unity Package Manager...");
+		SessionState.SetBool(NavigationInstallSessionKey, true);
+		navigationInstallRequest = Client.Add(NavigationPackageSpec);
+		EditorApplication.update += PollNavigationPackageInstall;
+	}
+
+	static void PollNavigationPackageInstall()
+	{
+		if (navigationInstallRequest == null || !navigationInstallRequest.IsCompleted)
+		{
+			return;
+		}
+
+		EditorApplication.update -= PollNavigationPackageInstall;
+
+		if (navigationInstallRequest.Status == StatusCode.Success)
+		{
+			Debug.Log($"Installed required package {NavigationPackageSpec}.");
+		}
+		else
+		{
+			Debug.LogError($"Failed to install required package {NavigationPackageSpec}: {navigationInstallRequest.Error.message}");
+		}
+
+		navigationInstallRequest = null;
+		SessionState.SetBool(NavigationInstallSessionKey, false);
 	}
 
 	static void SetScriptingDefine(string define, bool enabled)
