@@ -13,7 +13,8 @@ public static class BodyPartUtils
         if (ModdingUtils.TryCreateNewItem(out string bodyPartName, out string bodyPartPath, out BodyPartConfig config))
         {
             string dstPath = Path.Combine(bodyPartPath, $"{bodyPartName}.prefab");
-            AssetDatabase.CopyAsset("Assets/CreatureCreatorSDK/Internal/Templates/BodyPart.prefab", dstPath);
+            string dstAssetPath = ModdingUtils.ConvertGlobalPathToLocalPath(dstPath);
+            AssetDatabase.CopyAsset("Assets/CreatureCreatorSDK/Internal/Templates/BodyPart.prefab", dstAssetPath);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }

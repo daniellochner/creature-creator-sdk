@@ -13,11 +13,12 @@ public static class PatternUtils
         if (ModdingUtils.TryCreateNewItem(out string patternName, out string patternPath, out PatternConfig config))
         {
             string dstPath = Path.Combine(patternPath, $"{patternName}.png");
-            AssetDatabase.CopyAsset("Assets/CreatureCreatorSDK/Internal/Templates/Pattern.png", dstPath);
+            string dstAssetPath = ModdingUtils.ConvertGlobalPathToLocalPath(dstPath);
+            AssetDatabase.CopyAsset("Assets/CreatureCreatorSDK/Internal/Templates/Pattern.png", dstAssetPath);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
-            config.thumbnail = AssetDatabase.LoadAssetAtPath<Texture2D>(ModdingUtils.ConvertGlobalPathToLocalPath(dstPath));
+            config.thumbnail = AssetDatabase.LoadAssetAtPath<Texture2D>(dstAssetPath);
         }
     }
 

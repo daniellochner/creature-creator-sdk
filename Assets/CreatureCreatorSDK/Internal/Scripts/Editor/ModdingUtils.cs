@@ -44,7 +44,7 @@ public static class ModdingUtils
         }
         Directory.CreateDirectory(itemPath);
 
-        string configPath = Path.Combine(ConvertGlobalPathToLocalPath(itemPath), "config.asset");
+        string configPath = $"{ConvertGlobalPathToLocalPath(itemPath)}/config.asset";
         config.bundleName = itemName.ToLower().Replace(' ', '_');
         config.name = itemName;
         AssetDatabase.CreateAsset(config, configPath);
@@ -280,7 +280,7 @@ public static class ModdingUtils
     }
     public static string ConvertGlobalPathToLocalPath(string globalPath)
     {
-        return Path.Combine(globalPath.Substring(Application.dataPath.Length - "Assets".Length));
+        return globalPath.Substring(Application.dataPath.Length - "Assets".Length).Replace('\\', '/');
     }
 
     public static bool IsTooLarge(string path, float maxFileSizeMB)

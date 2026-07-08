@@ -14,10 +14,11 @@ public static class MappingUtils
         if (ModdingUtils.TryCreateNewItem(out string mapName, out string mapPath, out MapConfig config))
         {
             string dstPath = Path.Combine(mapPath, $"{mapName}.unity");
-            AssetDatabase.CopyAsset("Assets/CreatureCreatorSDK/Internal/Templates/Map.unity", dstPath);
+            string dstAssetPath = ModdingUtils.ConvertGlobalPathToLocalPath(dstPath);
+            AssetDatabase.CopyAsset("Assets/CreatureCreatorSDK/Internal/Templates/Map.unity", dstAssetPath);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            EditorSceneManager.OpenScene(dstPath);
+            EditorSceneManager.OpenScene(dstAssetPath);
         }
     }
 
