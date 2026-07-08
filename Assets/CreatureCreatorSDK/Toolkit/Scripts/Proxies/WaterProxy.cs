@@ -3,13 +3,17 @@ using UnityEngine;
 
 namespace DanielLochner.CreatureCrafter.SDK
 {
+    [SelectionBase]
     public class WaterProxy : ProxyBehaviour
     {
-        public bool allowSwimming = true;
         public WaterType type;
         public GameObject customSplashPrefab;
+        public bool allowSwimming = true;
 
         public static List<WaterProxy> Proxies { get; private set; } = new ();
+
+        private static readonly Vector3 VISUAL_SCALE = new(10f, 1f, 10f);
+        private static readonly Vector3 VISUAL_POSITION = new(0f, 0f, 0f);
 
         private void OnEnable()
         {
@@ -18,6 +22,15 @@ namespace DanielLochner.CreatureCrafter.SDK
         private void OnDisable()
         {
             Proxies.Remove(this);
+        }
+        private void OnValidate()
+        {
+            if (transform.childCount > 0)
+            {
+                var visual = transform.GetChild(0);
+                visual.localScale = VISUAL_SCALE;
+                visual.localPosition = VISUAL_POSITION;
+            }
         }
 
         public enum WaterType
