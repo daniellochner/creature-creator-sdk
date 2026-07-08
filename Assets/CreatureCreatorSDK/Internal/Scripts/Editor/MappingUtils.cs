@@ -7,7 +7,7 @@ using DanielLochner.CreatureCrafter.SDK;
 
 public static class MappingUtils
 {
-    private static float MAX_MAP_SIZE = 20f;
+    private const float MAX_MAP_SIZE = 20f;
 
     public static void NewMap()
 	{
@@ -42,6 +42,11 @@ public static class MappingUtils
             return false;
         }
 
+        if (!ShouldBuildWithoutNavMeshSurface(scene))
+        {
+            return false;
+        }
+
         return ModdingUtils.TryBuildItem<MapConfig, MapConfigData>(config, buildAll, delegate (string buildPath)
         {
             CustomMapSecurityValidator.SanitizeAnimators(scene);
@@ -50,6 +55,51 @@ public static class MappingUtils
             UpdateUnlockables(config);
         });
 	}
+
+    private static bool ShouldBuildWithoutNavMeshSurface(Scene scene)
+    {
+        if (HasNavMeshSurface(scene))
+        {
+            return true;
+        }
+
+        string warningKey = "CreatureCreatorSDK.MissingNavMeshSurfaceWarning." + scene.path;
+        if (EditorPrefs.GetBool(warningKey, false))
+        {
+            return true;
+        }
+
+        bool buildAnyway = EditorUtility.DisplayDialog(
+            "Missing NavMesh Surface",
+            "This map does not contain a NavMeshSurface. You should probably add one before building... otherwise the game will need to build the nav mesh at runtime, which can cause significant lag when loading.",
+            "Build Anyway",
+            "Cancel Build");
+        if (buildAnyway)
+        {
+            EditorPrefs.SetBool(warningKey, true);
+        }
+
+        return buildAnyway;
+    }
+
+    private static bool HasNavMeshSurface(Scene scene)
+    {
+        System.Type navMeshSurfaceType = System.Type.GetType("Unity.AI.Navigation.NavMeshSurface, Unity.AI.Navigation");
+        if (navMeshSurfaceType == null)
+        {
+            return false;
+        }
+
+        foreach (GameObject root in scene.GetRootGameObjects())
+        {
+            if (root.GetComponentsInChildren(navMeshSurfaceType, true).Length > 0)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
 	public static void TestMap(MapConfig config)
 	{
