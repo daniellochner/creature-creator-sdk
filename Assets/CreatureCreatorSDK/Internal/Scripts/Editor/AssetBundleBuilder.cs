@@ -9,7 +9,7 @@ public static class AssetBundleBuilder
 {
 	public static void BuildAssetBundles(ItemConfig config, string buildPath, BuildTarget buildTarget)
 	{
-        BuildPipeline.BuildAssetBundles(buildPath, GetAssetBuilds(config.bundleName), BuildAssetBundleOptions.DeterministicAssetBundle, buildTarget);
+        BuildPipeline.BuildAssetBundles(buildPath, GetAssetBuilds(config.bundleName), BuildAssetBundleOptions.None, buildTarget);
     }
 
     private static AssetBundleBuild[] GetAssetBuilds(string bundleName)
