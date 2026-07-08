@@ -9,7 +9,7 @@ using UnityEngine;
 [InitializeOnLoad]
 public static class ProjectInit
 {
-	public const string SDKVersion = "1.8.7";
+	public const string SDKVersion = "1.8.9";
 	const string requiredVersion = "6000.1.17f1";
 
 	// Marker type from the "com.unity.ai.navigation" package.
