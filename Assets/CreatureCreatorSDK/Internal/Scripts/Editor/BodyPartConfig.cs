@@ -9,10 +9,10 @@ public class BodyPartConfig : ItemConfig
     [Header("Body Part")]
     public SaveType type;
     public DietType diet;
-    public int complexity;
-    public int health;
-    public float weight;
-    public float speed;
+    [Range(1, 10)] public int complexity;
+    [Range(1, 25)] public int health;
+    [Range(0.1f, 25f)] public float weight;
+    [Range(-0.1f, 0.5f)] public float speed;
     public List<AbilityType> abilities;
 
     public override string Singular => "Body Part";
