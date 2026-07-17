@@ -77,7 +77,11 @@ namespace DanielLochner.CreatureCrafter.SDK
             Strike2,
             Strike3,
             Swim,
-            Walk
+            Walk,
+            Charge1,
+            Charge2,
+            Charge3,
+            Dive
         }
     }
 }
