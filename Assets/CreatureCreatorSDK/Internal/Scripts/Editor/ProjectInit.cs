@@ -5,6 +5,7 @@ using UnityEditor.Build;
 using UnityEditor.PackageManager;
 using UnityEditor.PackageManager.Requests;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 [InitializeOnLoad]
 public static class ProjectInit
@@ -12,7 +13,6 @@ public static class ProjectInit
 	public const string SDKVersion = "1.8.9";
 	const string requiredVersion = "6000.1.17f1";
 
-	// Marker type from the "com.unity.ai.navigation" package.
 	const string NavigationDefine = "UNITY_NAVIGATION";
 	const string NavigationMarkerType = "Unity.AI.Navigation.NavMeshSurface, Unity.AI.Navigation";
 	const string NavigationPackageSpec = "com.unity.ai.navigation@2.0.8";
@@ -29,11 +29,15 @@ public static class ProjectInit
 
 	static void Start()
 	{
-		SetPlayerSettings();
-		EnsureNavigationPackageInstalled();
-		UpdateScriptingDefines();
 		CheckEditorVersion();
 		CheckSDKVersion();
+		SetPlayerSettings();
+		EnsureBuiltInRenderPipeline();
+
+		if (EnsureNavigationPackageInstalled())
+		{
+			UpdateScriptingDefines();
+		}
 	}
 
 	static void SetPlayerSettings()
@@ -47,24 +51,67 @@ public static class ProjectInit
 
 	static void UpdateScriptingDefines()
 	{
-		// Detect by type so this editor script compiles whether or not the package is installed.
 		bool navigationInstalled = Type.GetType(NavigationMarkerType) != null;
 		SetScriptingDefine(NavigationDefine, navigationInstalled);
 	}
 
-	static void EnsureNavigationPackageInstalled()
+	static void EnsureBuiltInRenderPipeline()
 	{
-		if (Type.GetType(NavigationMarkerType) != null ||
-			navigationInstallRequest != null ||
+		bool cleared = false;
+
+		if (GraphicsSettings.defaultRenderPipeline != null)
+		{
+			Debug.Log("Clearing the default render pipeline asset.");
+			GraphicsSettings.defaultRenderPipeline = null;
+			cleared = true;
+		}
+
+		int activeQualityLevel = QualitySettings.GetQualityLevel();
+		bool switchedQualityLevel = false;
+
+		for (int i = 0; i < QualitySettings.names.Length; i++)
+		{
+			if (QualitySettings.GetRenderPipelineAssetAt(i) == null)
+			{
+				continue;
+			}
+
+			Debug.Log($"Clearing the render pipeline asset on quality level '{QualitySettings.names[i]}'.");
+			QualitySettings.SetQualityLevel(i, false);
+			QualitySettings.renderPipeline = null;
+			switchedQualityLevel = true;
+			cleared = true;
+		}
+
+		if (switchedQualityLevel)
+		{
+			QualitySettings.SetQualityLevel(activeQualityLevel, false);
+		}
+
+		if (cleared)
+		{
+			EditorApplication.delayCall += AssetDatabase.SaveAssets;
+			Debug.Log("Converted the project to the built-in render pipeline. Materials that used render pipeline shaders need to be reassigned to built-in ones.");
+		}
+	}
+
+	static bool EnsureNavigationPackageInstalled()
+	{
+		if (Type.GetType(NavigationMarkerType) != null)
+		{
+			return true;
+		}
+		if (navigationInstallRequest != null ||
 			SessionState.GetBool(NavigationInstallSessionKey, false))
 		{
-			return;
+			return false;
 		}
 
 		Debug.Log($"Creature Creator SDK requires {NavigationPackageSpec}. Installing through Unity Package Manager...");
 		SessionState.SetBool(NavigationInstallSessionKey, true);
 		navigationInstallRequest = Client.Add(NavigationPackageSpec);
 		EditorApplication.update += PollNavigationPackageInstall;
+		return false;
 	}
 
 	static void PollNavigationPackageInstall()
@@ -76,7 +123,8 @@ public static class ProjectInit
 
 		EditorApplication.update -= PollNavigationPackageInstall;
 
-		if (navigationInstallRequest.Status == StatusCode.Success)
+		bool installed = navigationInstallRequest.Status == StatusCode.Success;
+		if (installed)
 		{
 			Debug.Log($"Installed required package {NavigationPackageSpec}.");
 		}
@@ -87,6 +135,11 @@ public static class ProjectInit
 
 		navigationInstallRequest = null;
 		SessionState.SetBool(NavigationInstallSessionKey, false);
+
+		if (!installed)
+		{
+			UpdateScriptingDefines();
+		}
 	}
 
 	static void SetScriptingDefine(string define, bool enabled)
@@ -98,7 +151,7 @@ public static class ProjectInit
 		bool present = defines.Contains(define);
 		if (enabled == present)
 		{
-			return; // Already in the desired state; avoid triggering a recompile loop.
+			return;
 		}
 
 		if (enabled)
