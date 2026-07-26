@@ -136,10 +136,7 @@ public static class ProjectInit
 		navigationInstallRequest = null;
 		SessionState.SetBool(NavigationInstallSessionKey, false);
 
-		if (!installed)
-		{
-			UpdateScriptingDefines();
-		}
+		UpdateScriptingDefines();
 	}
 
 	static void SetScriptingDefine(string define, bool enabled)
