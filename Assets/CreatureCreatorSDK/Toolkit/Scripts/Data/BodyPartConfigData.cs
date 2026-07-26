@@ -81,7 +81,10 @@ namespace DanielLochner.CreatureCrafter.SDK
             Charge1,
             Charge2,
             Charge3,
-            Dive
+            Dive,
+            Stomp1,
+            Stomp2,
+            Stomp3,
         }
     }
 }
