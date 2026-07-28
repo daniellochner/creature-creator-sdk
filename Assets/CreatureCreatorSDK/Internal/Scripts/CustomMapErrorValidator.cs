@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Text;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine.SceneManagement;
 
 namespace DanielLochner.CreatureCrafter.SDK

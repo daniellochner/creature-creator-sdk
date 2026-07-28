@@ -14,25 +14,18 @@ public static class AssetBundleBuilder
 
     private static AssetBundleBuild[] GetAssetBuilds(string bundleName)
     {
-        List<string> targetNames = new List<string>() {
-            bundleName,
-            bundleName + "_scene",
-        };
-
         List<AssetBundleBuild> builds = new List<AssetBundleBuild>();
-        foreach (string targetName in targetNames)
-        {
-            string[] assets = AssetDatabase.GetAssetPathsFromAssetBundle(targetName);
-            if (assets.Length > 0)
-            {
-                AssetBundleBuild build = new AssetBundleBuild();
-                build.assetBundleName = targetName;
-                build.assetNames = assets;
 
-                builds.Add(build);
-            }
+        string[] assets = AssetDatabase.GetAssetPathsFromAssetBundle(bundleName);
+        if (assets.Length > 0)
+        {
+            AssetBundleBuild build = new AssetBundleBuild();
+            build.assetBundleName = bundleName;
+            build.assetNames = assets;
+
+            builds.Add(build);
         }
-        
+
         return builds.ToArray();
     }
 
@@ -64,14 +57,14 @@ public static class AssetBundleBuilder
             if (fileName == "config.asset")
                 continue;
 
+            if (extension == ".unity")
+                continue;
+
             string localFilePath = "Assets" + file.Substring(Application.dataPath.Length);
 
             var assetImporter = AssetImporter.GetAtPath(localFilePath);
 
-            if (extension == ".unity")
-                assetImporter.assetBundleName = config.bundleName + "_scene";
-            else
-                assetImporter.assetBundleName = config.bundleName;
+            assetImporter.assetBundleName = config.bundleName;
         }
     }
 

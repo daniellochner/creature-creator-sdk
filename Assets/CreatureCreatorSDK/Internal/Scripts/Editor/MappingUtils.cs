@@ -1,13 +1,17 @@
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using DanielLochner.CreatureCrafter.SDK;
 
 public static class MappingUtils
 {
     private const float MAX_MAP_SIZE = 20f;
+
+    private const string EXPORT_DIRECTORY_NAME = "__MapExport";
 
     public static void NewMap()
 	{
@@ -29,6 +33,9 @@ public static class MappingUtils
             return false;
         }
 
+        string exportDirectory = GetExportDirectory(config);
+        AssetDatabase.DeleteAsset(exportDirectory);
+
         string[] scenes = Directory.GetFiles(config.GetFullDirectory(), "*.unity", SearchOption.AllDirectories);
         if (scenes.Length > 1)
         {
@@ -43,19 +50,279 @@ public static class MappingUtils
             return false;
         }
 
+        if (string.IsNullOrEmpty(scene.path))
+        {
+            ModdingUtils.ThrowError("Save your map scene before building it.");
+            return false;
+        }
+
         if (!ShouldBuildWithoutNavMeshSurface(scene))
         {
             return false;
         }
 
-        return ModdingUtils.TryBuildItem<MapConfig, MapConfigData>(config, buildAll, delegate (string buildPath)
+        if (!ShouldBuildWithoutSceneOnlyData(scene))
         {
-            CustomMapSecurityValidator.SanitizeAnimators(scene);
-            EditorSceneManager.SaveOpenScenes();
-            GenerateThumbnail(config);
-            UpdateUnlockables(config);
-        });
+            return false;
+        }
+
+        try
+        {
+            return ModdingUtils.TryBuildItem<MapConfig, MapConfigData>(config, buildAll, delegate (string buildPath)
+            {
+                CustomMapSecurityValidator.SanitizeAnimators(scene);
+                EditorSceneManager.SaveOpenScenes();
+                GenerateThumbnail(config);
+                UpdateUnlockables(config);
+
+                ExportMapPrefab(config, scene, exportDirectory);
+            });
+        }
+        finally
+        {
+            AssetDatabase.DeleteAsset(exportDirectory);
+        }
 	}
+
+    private static string GetExportDirectory(MapConfig config)
+    {
+        return config.GetDirectory() + EXPORT_DIRECTORY_NAME;
+    }
+
+    private static void ExportMapPrefab(MapConfig config, Scene scene, string exportDirectory)
+    {
+        AssetDatabase.CreateFolder(config.GetDirectory().TrimEnd('/'), EXPORT_DIRECTORY_NAME);
+
+        string mapName = Path.GetFileNameWithoutExtension(scene.path);
+
+        string copyPath = $"{exportDirectory}/{mapName}.unity";
+        string prefabPath = $"{exportDirectory}/{mapName}.prefab";
+
+        if (!AssetDatabase.CopyAsset(scene.path, copyPath))
+        {
+            ModdingUtils.ThrowError($"Failed to copy '{scene.path}' for export.");
+        }
+
+        Scene copy = default;
+        try
+        {
+            copy = EditorSceneManager.OpenScene(copyPath, OpenSceneMode.Additive);
+
+            CaptureEnvironment(copy, exportDirectory);
+
+            GameObject[] sceneRoots = copy.GetRootGameObjects();
+
+            Scene activeScene = SceneManager.GetActiveScene();
+            SceneManager.SetActiveScene(copy);
+            GameObject root = new GameObject(mapName);
+            SceneManager.SetActiveScene(activeScene);
+
+            foreach (GameObject sceneRoot in sceneRoots)
+            {
+                sceneRoot.transform.SetParent(root.transform, true);
+            }
+
+            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
+            if (prefab == null)
+            {
+                ModdingUtils.ThrowError($"Failed to export the map as a prefab to '{prefabPath}'.");
+            }
+
+            if (!CustomMapValidator.IsMapPrefabValid(prefab, new HashSet<GameObject>(), out string error))
+            {
+                ModdingUtils.ThrowError(error);
+            }
+
+            if (!IsMapPrefabIdentifiable(config, prefab, exportDirectory, out string identityError))
+            {
+                ModdingUtils.ThrowError(identityError);
+            }
+        }
+        finally
+        {
+            if (copy.IsValid())
+            {
+                EditorSceneManager.CloseScene(copy, true);
+            }
+            AssetDatabase.DeleteAsset(copyPath);
+        }
+    }
+
+    private static void CaptureEnvironment(Scene copy, string exportDirectory)
+    {
+        MapInfo mapInfo = null;
+        foreach (GameObject root in copy.GetRootGameObjects())
+        {
+            mapInfo = root.GetComponentInChildren<MapInfo>(true);
+            if (mapInfo != null)
+            {
+                break;
+            }
+        }
+
+        if (mapInfo == null)
+        {
+            return;
+        }
+
+        mapInfo.overrideEnvironment = true;
+        mapInfo.skybox = EnsureBundlableMaterial(RenderSettings.skybox, exportDirectory);
+
+        mapInfo.sun = FindLightInScene(RenderSettings.sun, copy);
+
+        mapInfo.ambientMode = RenderSettings.ambientMode;
+        mapInfo.ambientLight = RenderSettings.ambientLight;
+        mapInfo.ambientSkyColor = RenderSettings.ambientSkyColor;
+        mapInfo.ambientEquatorColor = RenderSettings.ambientEquatorColor;
+        mapInfo.ambientGroundColor = RenderSettings.ambientGroundColor;
+        mapInfo.ambientIntensity = RenderSettings.ambientIntensity;
+
+        mapInfo.fog = RenderSettings.fog;
+        mapInfo.fogMode = RenderSettings.fogMode;
+        mapInfo.fogColor = RenderSettings.fogColor;
+        mapInfo.fogDensity = RenderSettings.fogDensity;
+        mapInfo.fogStartDistance = RenderSettings.fogStartDistance;
+        mapInfo.fogEndDistance = RenderSettings.fogEndDistance;
+
+        EditorUtility.SetDirty(mapInfo);
+    }
+
+    private static Material EnsureBundlableMaterial(Material material, string exportDirectory)
+    {
+        if (material == null)
+        {
+            return null;
+        }
+
+        string assetPath = AssetDatabase.GetAssetPath(material);
+        if (assetPath.StartsWith("Assets/"))
+        {
+            return material;
+        }
+
+        string copyPath = AssetDatabase.GenerateUniqueAssetPath($"{exportDirectory}/{material.name}.mat");
+        AssetDatabase.CreateAsset(new Material(material), copyPath);
+        AssetDatabase.SaveAssets();
+
+        Debug.Log($"'{material.name}' is a built-in Unity material and cannot go into an AssetBundle, so a copy of it was included in the map instead.");
+
+        return AssetDatabase.LoadAssetAtPath<Material>(copyPath);
+    }
+
+    private static Light FindLightInScene(Light light, Scene scene)
+    {
+        if (light == null)
+        {
+            return null;
+        }
+
+        string path = GetHierarchyPath(light.transform);
+
+        foreach (GameObject root in scene.GetRootGameObjects())
+        {
+            if (path == root.name)
+            {
+                return root.GetComponent<Light>();
+            }
+
+            if (path.StartsWith(root.name + "/"))
+            {
+                Transform match = root.transform.Find(path.Substring(root.name.Length + 1));
+                if (match != null)
+                {
+                    return match.GetComponent<Light>();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private static string GetHierarchyPath(Transform transform)
+    {
+        string path = transform.name;
+
+        for (Transform parent = transform.parent; parent != null; parent = parent.parent)
+        {
+            path = parent.name + "/" + path;
+        }
+
+        return path;
+    }
+
+    private static bool IsMapPrefabIdentifiable(MapConfig config, GameObject prefab, string exportDirectory, out string error)
+    {
+        int count = prefab.GetComponentsInChildren<MapInfo>(true).Length;
+        if (count != 1)
+        {
+            error = count == 0
+                ? "The exported map has no MapInfo on it. Add one to an object in your map."
+                : $"The exported map has {count} MapInfo components on it, and a map can only have 1. Note that this counts the ones on inactive objects too.";
+            return false;
+        }
+
+        string mapDirectory = config.GetFullDirectory();
+        string excludeDirectory = Path.Combine(mapDirectory, "Exclude");
+
+        foreach (string file in Directory.GetFiles(mapDirectory, "*.prefab", SearchOption.AllDirectories))
+        {
+            if (file.StartsWith(excludeDirectory))
+            {
+                continue;
+            }
+
+            string assetPath = ModdingUtils.ConvertGlobalPathToLocalPath(file);
+            if (assetPath.StartsWith(exportDirectory))
+            {
+                continue;
+            }
+
+            GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+            if (asset != null && asset.GetComponentsInChildren<MapInfo>(true).Length > 0)
+            {
+                error = $"'{assetPath}' has a MapInfo on it. The game identifies your map by its MapInfo, so nothing else in the map folder can have one. Remove it, or move that prefab into the 'Exclude' folder.";
+                return false;
+            }
+        }
+
+        error = "";
+        return true;
+    }
+
+    private static bool ShouldBuildWithoutSceneOnlyData(Scene scene)
+    {
+        bool hasBakedLighting = LightmapSettings.lightmaps.Length > 0
+            || (LightmapSettings.lightProbes != null && LightmapSettings.lightProbes.count > 0);
+
+        string warningKey = "CreatureCreatorSDK.SceneOnlyDataWarning." + scene.path;
+        if (EditorPrefs.GetBool(warningKey, false))
+        {
+            return true;
+        }
+
+        bool buildAnyway = true;
+        if (hasBakedLighting)
+        {
+            buildAnyway = EditorUtility.DisplayDialog(
+                "Scene Data Will Not Be Exported",
+                "Your map is currently lit by baked lighting, so it will look different in the game than it does here.",
+                "Build Anyway",
+                "Cancel Build");
+
+            EditorPrefs.SetBool(warningKey, true);
+        }
+
+        return buildAnyway;
+    }
+
+    private static bool HasBakedSceneNavMesh(Scene scene)
+    {
+        string sceneDataDirectory = Path.Combine(
+            Path.GetDirectoryName(scene.path),
+            Path.GetFileNameWithoutExtension(scene.path));
+
+        return File.Exists(Path.Combine(sceneDataDirectory, "NavMesh.asset"));
+    }
 
     private static bool ShouldBuildWithoutNavMeshSurface(Scene scene)
     {

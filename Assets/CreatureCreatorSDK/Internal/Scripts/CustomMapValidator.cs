@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace DanielLochner.CreatureCrafter.SDK
@@ -6,7 +8,12 @@ namespace DanielLochner.CreatureCrafter.SDK
 	{
 		public static bool IsSceneValid(Scene scene, out string error)
 		{
-			if(!CustomMapSecurityValidator.IsSceneValid(scene, out error))
+			return IsSceneValid(scene, new HashSet<GameObject>(), out error);
+		}
+
+		public static bool IsSceneValid(Scene scene, HashSet<GameObject> validated, out string error)
+		{
+			if(!CustomMapSecurityValidator.IsSceneValid(scene, validated, out error))
 			{
 				return false;
 			}
@@ -22,6 +29,27 @@ namespace DanielLochner.CreatureCrafter.SDK
 			}
 
 			return true;
+		}
+
+		public static bool IsMapPrefabValid(GameObject prefab, HashSet<GameObject> validated, out string error)
+		{
+			if(prefab == null)
+			{
+				error = "The map prefab could not be loaded.";
+				return false;
+			}
+
+			return CustomMapSecurityValidator.IsGameObjectValid(prefab, validated, out error);
+		}
+
+		public static bool IsMapSceneStructureValid(Scene scene, out string error)
+		{
+			if(!CustomMapRequiredComponentsValidator.IsSceneValid(scene, out error))
+			{
+				return false;
+			}
+
+			return CustomMapErrorValidator.IsSceneValid(scene, out error);
 		}
 	}
 }
