@@ -63,6 +63,7 @@ namespace DanielLochner.CreatureCrafter.SDK
 			typeof(CreatureDisplayProxy),
 			typeof(KillZoneProxy),
 			typeof(OutOfBoundsProxy),
+			typeof(LODGroup),
 
 #if UNITY_POST_PROCESSING_STACK_V2
 			typeof(UnityEngine.Rendering.PostProcessing.PostProcessVolume),
