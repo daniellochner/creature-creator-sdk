@@ -7,21 +7,21 @@ namespace DanielLochner.CreatureCrafter.SDK
         [Range(0, 100)] public float damageAmount = 10f;
         public float thresholdSpeed = 3f;
 
-        public override bool IsValid()
+        public override bool IsValid(out string error)
         {
-            if (damageAmount < 0 || damageAmount > 100)
+            if (!IsFinite(damageAmount) || damageAmount < 0f || damageAmount > 100f)
             {
-                Debug.LogError("Damage amount must be in the range [0, 100].");
+                error = "Damage amount must be a finite value in the range [0, 100].";
                 return false;
             }
 
-            if (thresholdSpeed < 0)
+            if (!IsFinite(thresholdSpeed) || thresholdSpeed < 0f)
             {
-                Debug.LogError("Threshold speed must be a positive value");
+                error = "Threshold speed must be a finite non-negative value.";
                 return false;
             }
 
-            return base.IsValid();
+            return base.IsValid(out error);
         }
     }
 }

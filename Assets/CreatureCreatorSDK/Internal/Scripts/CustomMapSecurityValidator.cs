@@ -92,6 +92,7 @@ namespace DanielLochner.CreatureCrafter.SDK
 		};
 
 		const BindingFlags FieldFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly;
+		const BindingFlags DeclaredMemberFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
 
 		const int MaxDepth = 8;
 
@@ -293,9 +294,59 @@ namespace DanielLochner.CreatureCrafter.SDK
 
 		static bool IsWhitelisted(Component component, Type[] whitelist)
 		{
+			if(component is ProxyBehaviour)
+			{
+				return IsTrustedProxyType(component.GetType(), whitelist);
+			}
+
 			foreach(var type in whitelist)
 			{
 				if(type.IsInstanceOfType(component))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		internal static bool IsTrustedProxyType(Type proxyType)
+		{
+			return IsTrustedProxyType(proxyType, whitelistedComponents);
+		}
+
+		static bool IsTrustedProxyType(Type proxyType, Type[] whitelist)
+		{
+			if(proxyType == null || !typeof(ProxyBehaviour).IsAssignableFrom(proxyType))
+			{
+				return false;
+			}
+
+			foreach(var type in whitelist)
+			{
+				if(type == proxyType)
+				{
+					return true;
+				}
+			}
+
+			Type baseType = proxyType.BaseType;
+			if(baseType == null
+				|| !string.IsNullOrEmpty(proxyType.Namespace)
+				|| proxyType.Name != baseType.Name
+				|| proxyType.Assembly != baseType.Assembly
+				|| proxyType.GetFields(DeclaredMemberFlags).Length != 0
+				|| proxyType.GetMethods(DeclaredMemberFlags).Length != 0
+				|| proxyType.GetProperties(DeclaredMemberFlags).Length != 0
+				|| proxyType.GetEvents(DeclaredMemberFlags).Length != 0
+				|| proxyType.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic).Length != 0)
+			{
+				return false;
+			}
+
+			foreach(var type in whitelist)
+			{
+				if(type == baseType)
 				{
 					return true;
 				}

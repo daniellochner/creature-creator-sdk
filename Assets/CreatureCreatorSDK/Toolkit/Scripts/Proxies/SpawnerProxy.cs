@@ -4,6 +4,7 @@ using UnityEngine.Serialization;
 
 namespace DanielLochner.CreatureCrafter.SDK
 {
+    [ProxyCountLimit(ProxyValidationLimits.MaxSpawners)]
     public class SpawnerProxy : ProxyBehaviour
     {
         public CustomObjectProxy model;
@@ -20,21 +21,23 @@ namespace DanielLochner.CreatureCrafter.SDK
             Proxies.Remove(this);
         }
 
-        public override bool IsValid()
+        public override bool IsValid(out string error)
         {
             if (model == null)
             {
-                Debug.LogError("A model must be assigned.");
+                error = "A model must be assigned.";
                 return false;
             }
 
-            if (spawnCooldown.x < 10)
+            if (!IsFinite(spawnCooldown)
+                || spawnCooldown.x < 10f
+                || spawnCooldown.y < spawnCooldown.x)
             {
-                Debug.LogError("Spawn cooldown must be in the range [10, Infinity).", gameObject);
+                error = "Spawn cooldown values must be finite, ordered from minimum to maximum, and at least 10 seconds.";
                 return false;
             }
 
-            return base.IsValid();
+            return base.IsValid(out error);
         }
     }
 }

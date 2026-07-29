@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace DanielLochner.CreatureCrafter.SDK
 {
+    [ProxyCountLimit(ProxyValidationLimits.MaxCreatureDisplays)]
     public class CreatureDisplayProxy : ProxyBehaviour
     {
         public TextAsset creatureDataAsset;
@@ -19,15 +20,15 @@ namespace DanielLochner.CreatureCrafter.SDK
             Proxies.Remove(this);
         }
 
-        public override bool IsValid()
+        public override bool IsValid(out string error)
         {
             if (creatureDataAsset == null)
             {
-                Debug.LogError("A valid .dat file must be provided.");
+                error = "A valid .dat file must be provided.";
                 return false;
             }
 
-            return base.IsValid();
+            return base.IsValid(out error);
         }
     }
 }

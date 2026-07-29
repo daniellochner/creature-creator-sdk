@@ -13,7 +13,17 @@ namespace DanielLochner.CreatureCrafter.SDK
 
 		public static bool IsSceneValid(Scene scene, HashSet<GameObject> validated, out string error)
 		{
+			if(!ProxySemanticValidator.IsSceneValid(scene, out error))
+			{
+				return false;
+			}
+
 			if(!CustomMapSecurityValidator.IsSceneValid(scene, validated, out error))
+			{
+				return false;
+			}
+
+			if(!ProxySemanticValidator.AreGameObjectsValid(validated, out error))
 			{
 				return false;
 			}
@@ -39,7 +49,17 @@ namespace DanielLochner.CreatureCrafter.SDK
 				return false;
 			}
 
-			return CustomMapSecurityValidator.IsGameObjectValid(prefab, validated, out error);
+			if(!ProxySemanticValidator.IsGameObjectValid(prefab, out error))
+			{
+				return false;
+			}
+
+			if(!CustomMapSecurityValidator.IsGameObjectValid(prefab, validated, out error))
+			{
+				return false;
+			}
+
+			return ProxySemanticValidator.AreGameObjectsValid(validated, out error);
 		}
 
 		public static bool IsMapSceneStructureValid(Scene scene, out string error)

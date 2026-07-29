@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace DanielLochner.CreatureCrafter.SDK
 {
+    [ProxyCountLimit(typeof(CustomObjectProxy), ProxyValidationLimits.MaxCustomObjects)]
     public class CustomObjectProxy : ProxyBehaviour
     {
         [HideInInspector] public string modelId;

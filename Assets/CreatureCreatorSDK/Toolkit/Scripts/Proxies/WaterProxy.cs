@@ -33,6 +33,17 @@ namespace DanielLochner.CreatureCrafter.SDK
             }
         }
 
+        public override bool IsValid(out string error)
+        {
+            if ((int)type < (int)WaterType.Empty || (int)type > (int)WaterType.Lake)
+            {
+                error = "Water type has an unsupported value.";
+                return false;
+            }
+
+            return base.IsValid(out error);
+        }
+
         public enum WaterType
         {
             Empty,

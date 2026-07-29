@@ -22,5 +22,16 @@ namespace DanielLochner.CreatureCrafter.SDK
         {
             Proxies.Remove(this);
         }
+
+        public override bool IsValid(out string error)
+        {
+            if (transform.childCount == 0)
+            {
+                error = "A platform must have a model child.";
+                return false;
+            }
+
+            return base.IsValid(out error);
+        }
     }
 }
