@@ -309,7 +309,10 @@ public static class MappingUtils
                 "Build Anyway",
                 "Cancel Build");
 
-            EditorPrefs.SetBool(warningKey, true);
+            if (buildAnyway)
+            {
+                EditorPrefs.SetBool(warningKey, true);
+            }
         }
 
         return buildAnyway;
