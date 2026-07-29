@@ -15,6 +15,7 @@ namespace DanielLochner.CreatureCrafter.SDK
         public string Description;
         public string Author;
 
+        [Newtonsoft.Json.JsonIgnore]
         public abstract string Singular { get; }
     }
 }
