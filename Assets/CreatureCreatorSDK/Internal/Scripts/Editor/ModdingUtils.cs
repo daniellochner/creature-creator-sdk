@@ -102,20 +102,21 @@ public static class ModdingUtils
         }
 
         // Build asset bundles
-        config.hideFlags |= HideFlags.DontUnloadUnusedAsset;
-        if (buildAll)
+        using (KeepLoaded(config))
         {
-            BuildBundlesForPlatform(config, RuntimePlatform.WindowsPlayer);
-            BuildBundlesForPlatform(config, RuntimePlatform.OSXPlayer);
-            BuildBundlesForPlatform(config, RuntimePlatform.LinuxPlayer);
-            BuildBundlesForPlatform(config, RuntimePlatform.IPhonePlayer);
-            BuildBundlesForPlatform(config, RuntimePlatform.Android);
+            if (buildAll)
+            {
+                BuildBundlesForPlatform(config, RuntimePlatform.WindowsPlayer);
+                BuildBundlesForPlatform(config, RuntimePlatform.OSXPlayer);
+                BuildBundlesForPlatform(config, RuntimePlatform.LinuxPlayer);
+                BuildBundlesForPlatform(config, RuntimePlatform.IPhonePlayer);
+                BuildBundlesForPlatform(config, RuntimePlatform.Android);
+            }
+            else
+            {
+                BuildBundlesForPlatform(config, GetCurrentEditorPlayerPlatform());
+            }
         }
-        else
-        {
-            BuildBundlesForPlatform(config, GetCurrentEditorPlayerPlatform());
-        }
-        config.hideFlags &= ~HideFlags.DontUnloadUnusedAsset;
 
         // Generate new config using previous ItemId
         string nextDataJson = config.GetJSON();
@@ -130,6 +131,35 @@ public static class ModdingUtils
         Debug.Log($"Build completed in {DateTime.Now.Subtract(startTime).TotalSeconds.ToString("0")} seconds: {buildPath}");
 
         return true;
+    }
+
+    public static IDisposable KeepLoaded(ItemConfig config)
+    {
+        return new LoadedScope(config);
+    }
+    private class LoadedScope : IDisposable
+    {
+        private readonly ItemConfig config;
+        private readonly bool wasUnloadable;
+
+        public LoadedScope(ItemConfig config)
+        {
+            this.config = config;
+
+            wasUnloadable = (config.hideFlags & HideFlags.DontUnloadUnusedAsset) == 0;
+            if (wasUnloadable)
+            {
+                config.hideFlags |= HideFlags.DontUnloadUnusedAsset;
+            }
+        }
+
+        public void Dispose()
+        {
+            if (wasUnloadable && config != null)
+            {
+                config.hideFlags &= ~HideFlags.DontUnloadUnusedAsset;
+            }
+        }
     }
 
     public static void BuildBundlesForPlatform(ItemConfig config, RuntimePlatform platform)

@@ -44,12 +44,12 @@ public class ModdingMenus : MonoBehaviour
     {
         if (BodyPartConfig.GetSelected() is BodyPartConfig bodyPartConfig)
         {
-            onBodyPart?.Invoke(bodyPartConfig);
+            Invoke(bodyPartConfig, onBodyPart);
         }
         else
         if (PatternConfig.GetSelected() is PatternConfig patternConfig)
         {
-            onPattern?.Invoke(patternConfig);
+            Invoke(patternConfig, onPattern);
         }
         else
         if (MapConfig.GetSelected() is MapConfig mapConfig)
@@ -60,17 +60,30 @@ public class ModdingMenus : MonoBehaviour
             }
             else
             {
-                onMap?.Invoke(mapConfig);
+                Invoke(mapConfig, onMap);
             }
         }
         else
         if (MapConfig.GetCurrent() is MapConfig currentMap)
         {
-            onMap?.Invoke(currentMap);
+            Invoke(currentMap, onMap);
         }
         else
         {
             ModdingUtils.ThrowError("Please select a config file to perform an operation.");
+        }
+    }
+
+    private static void Invoke<T>(T config, Action<T> operation) where T : ItemConfig
+    {
+        if (operation == null)
+        {
+            return;
+        }
+
+        using (ModdingUtils.KeepLoaded(config))
+        {
+            operation.Invoke(config);
         }
     }
 
