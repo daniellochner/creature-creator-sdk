@@ -37,26 +37,25 @@ public static class BodyPartUtils
         var meshFilters = prefab.GetComponentsInChildren<MeshFilter>(true);
         var skinnedMeshRenderers = prefab.GetComponentsInChildren<SkinnedMeshRenderer>(true);
 
+        int modifiedAssetCount = MeshReadWriteUtils.EnableReadWrite(new[] { prefab });
+        if (modifiedAssetCount > 0)
+        {
+            Debug.Log($"Enabled Read/Write mode for {modifiedAssetCount} model asset(s) in prefab '{prefab.name}'.");
+        }
+
         int vertCount = 0;
         int meshCount = 0;
-        int modifiedMeshCount = 0;
         foreach (var mf in meshFilters)
         {
             if (mf.sharedMesh == null) continue;
-            EnableReadWriteForMesh(mf.sharedMesh, ref modifiedMeshCount);
             vertCount += mf.sharedMesh.vertexCount;
             meshCount++;
         }
         foreach (var smr in skinnedMeshRenderers)
         {
             if (smr.sharedMesh == null) continue;
-            EnableReadWriteForMesh(smr.sharedMesh, ref modifiedMeshCount);
             vertCount += smr.sharedMesh.vertexCount;
             meshCount++;
-        }
-        if (modifiedMeshCount > 0)
-        {
-            Debug.Log($"Enabled Read/Write mode for {modifiedMeshCount} mesh(es) in prefab '{prefab.name}'.");
         }
 
         var maxVertCount = 2048;
@@ -114,26 +113,5 @@ public static class BodyPartUtils
         }
 
         ModdingUtils.StartGame(ModdingUtils.GetApplicationPath(), path, "uploadbodypart");
-    }
-
-    private static void EnableReadWriteForMesh(Mesh mesh, ref int modifiedCount)
-    {
-        string meshPath = AssetDatabase.GetAssetPath(mesh);
-        if (string.IsNullOrEmpty(meshPath)) return;
-
-        var importer = AssetImporter.GetAtPath(meshPath) as ModelImporter;
-        if (importer != null)
-        {
-            if (!importer.isReadable)
-            {
-                importer.isReadable = true;
-                importer.SaveAndReimport();
-                modifiedCount++;
-            }
-        }
-        else
-        {
-            Debug.Log($"Could not load ModelImporter for mesh '{mesh.name}' ({meshPath})");
-        }
     }
 }

@@ -66,6 +66,8 @@ public static class MappingUtils
             return false;
         }
 
+        EnableReadWriteForCustomObjects(scene);
+
         try
         {
             return ModdingUtils.TryBuildItem<MapConfig, MapConfigData>(config, buildAll, delegate (string buildPath)
@@ -83,6 +85,32 @@ public static class MappingUtils
             AssetDatabase.DeleteAsset(exportDirectory);
         }
 	}
+
+    private static void EnableReadWriteForCustomObjects(Scene scene)
+    {
+        List<GameObject> customObjects = new List<GameObject>();
+
+        foreach (GameObject root in scene.GetRootGameObjects())
+        {
+            foreach (CustomObjectProxy customObject in root.GetComponentsInChildren<CustomObjectProxy>(true))
+            {
+                customObjects.Add(customObject.gameObject);
+            }
+
+            // A spawner's model can be a prefab that only exists in the project, so it is not covered by the scene walk above.
+            foreach (SpawnerProxy spawner in root.GetComponentsInChildren<SpawnerProxy>(true))
+            {
+                if (spawner.model == null) continue;
+                customObjects.Add(spawner.model.gameObject);
+            }
+        }
+
+        int modifiedAssetCount = MeshReadWriteUtils.EnableReadWrite(customObjects);
+        if (modifiedAssetCount > 0)
+        {
+            Debug.Log($"Enabled Read/Write mode for {modifiedAssetCount} model asset(s) used by the map's custom objects.");
+        }
+    }
 
     private static string GetExportDirectory(MapConfig config)
     {
