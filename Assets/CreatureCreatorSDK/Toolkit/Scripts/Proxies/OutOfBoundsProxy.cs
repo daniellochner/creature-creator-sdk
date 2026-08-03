@@ -20,7 +20,9 @@ namespace DanielLochner.CreatureCrafter.SDK
         {
             base.OnDrawGizmosSelected();
 
-            Gizmos.DrawWireCube(transform.position, transform.localScale);
+            Gizmos.matrix = transform.localToWorldMatrix;
+            Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
+            Gizmos.matrix = Matrix4x4.identity;
         }
     }
 }
