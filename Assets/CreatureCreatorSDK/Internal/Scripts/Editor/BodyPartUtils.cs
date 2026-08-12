@@ -67,10 +67,10 @@ public static class BodyPartUtils
 
         return ModdingUtils.TryBuildItem<BodyPartConfig, BodyPartConfigData>(config, buildAll, delegate
         {
-            string excludeDir = Path.Combine(config.GetDirectory(), "Exclude");
+            string excludeDir = $"{config.GetDirectory().TrimEnd('/')}/Exclude";
             if (Directory.Exists(excludeDir))
             {
-                string thumbnailPath = Path.Combine(excludeDir, "thumb.png");
+                string thumbnailPath = $"{excludeDir}/thumb.png";
                 if (File.Exists(thumbnailPath))
                 {
                     Texture2D savedTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(thumbnailPath);

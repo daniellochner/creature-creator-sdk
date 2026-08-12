@@ -119,7 +119,15 @@ public static class MappingUtils
 
     private static void ExportMapPrefab(MapConfig config, Scene scene, string exportDirectory)
     {
-        AssetDatabase.CreateFolder(config.GetDirectory().TrimEnd('/'), EXPORT_DIRECTORY_NAME);
+        if (!AssetDatabase.IsValidFolder(exportDirectory))
+        {
+            AssetDatabase.CreateFolder(config.GetDirectory().TrimEnd('/'), EXPORT_DIRECTORY_NAME);
+
+            if (!AssetDatabase.IsValidFolder(exportDirectory))
+            {
+                ModdingUtils.ThrowError($"Failed to create the export folder '{exportDirectory}'. Close anything that might be holding onto that folder, then try again.");
+            }
+        }
 
         string mapName = Path.GetFileNameWithoutExtension(scene.path);
 
@@ -150,10 +158,14 @@ public static class MappingUtils
                 sceneRoot.transform.SetParent(root.transform, true);
             }
 
-            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
-            if (prefab == null)
+            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, prefabPath, out bool success);
+            if (!success || prefab == null)
             {
-                ModdingUtils.ThrowError($"Failed to export the map as a prefab to '{prefabPath}'.");
+                if (TryFindMissingScript(root, out string missingScriptPath))
+                {
+                    ModdingUtils.ThrowError($"'{missingScriptPath}' has a missing script on it, which stops the map from being exported. This usually means a package the map relies on is not installed, or that the project has compiler errors.");
+                }
+                ModdingUtils.ThrowError($"Failed to export the map as a prefab to '{prefabPath}'. Unity logged the reason to the Console just above this error.");
             }
 
             if (!CustomMapValidator.IsMapPrefabValid(prefab, new HashSet<GameObject>(), out string error))
@@ -266,6 +278,24 @@ public static class MappingUtils
         return null;
     }
 
+    private static bool TryFindMissingScript(GameObject root, out string path)
+    {
+        foreach (Transform transform in root.GetComponentsInChildren<Transform>(true))
+        {
+            foreach (Component component in transform.GetComponents<Component>())
+            {
+                if (component == null)
+                {
+                    path = GetHierarchyPath(transform);
+                    return true;
+                }
+            }
+        }
+
+        path = "";
+        return false;
+    }
+
     private static string GetHierarchyPath(Transform transform)
     {
         string path = transform.name;
@@ -290,11 +320,11 @@ public static class MappingUtils
         }
 
         string mapDirectory = config.GetFullDirectory();
-        string excludeDirectory = Path.Combine(mapDirectory, "Exclude");
+        string excludeDirectory = $"{mapDirectory.TrimEnd('/')}/Exclude";
 
         foreach (string file in Directory.GetFiles(mapDirectory, "*.prefab", SearchOption.AllDirectories))
         {
-            if (file.StartsWith(excludeDirectory))
+            if (file.Replace('\\', '/').StartsWith(excludeDirectory))
             {
                 continue;
             }
@@ -456,14 +486,14 @@ public static class MappingUtils
     {
         if (ImageGenerator.TryGetThumbnail(512, 512, out Texture2D tex))
         {
-            string thumbnailDirectory = Path.Combine(config.GetDirectory(), "Exclude");
+            string thumbnailDirectory = $"{config.GetDirectory().TrimEnd('/')}/Exclude";
 
             if (!Directory.Exists(thumbnailDirectory))
             {
                 Directory.CreateDirectory(thumbnailDirectory);
             }
 
-            string thumbnailPath = Path.Combine(thumbnailDirectory, "thumb.png");
+            string thumbnailPath = $"{thumbnailDirectory}/thumb.png";
 
             byte[] textureData = tex.EncodeToPNG();
             File.WriteAllBytes(thumbnailPath, textureData);

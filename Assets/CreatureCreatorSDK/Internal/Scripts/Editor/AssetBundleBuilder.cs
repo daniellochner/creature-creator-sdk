@@ -60,9 +60,11 @@ public static class AssetBundleBuilder
             if (extension == ".unity")
                 continue;
 
-            string localFilePath = "Assets" + file.Substring(Application.dataPath.Length);
+            string localFilePath = ModdingUtils.ConvertGlobalPathToLocalPath(file);
 
             var assetImporter = AssetImporter.GetAtPath(localFilePath);
+            if (assetImporter == null)
+                continue;
 
             assetImporter.assetBundleName = config.bundleName;
         }

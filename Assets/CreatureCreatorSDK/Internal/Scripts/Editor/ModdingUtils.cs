@@ -306,7 +306,7 @@ public static class ModdingUtils
 
     public static string ConvertLocalPathToGlobalPath(string localPath)
     {
-        return Path.Combine(Application.dataPath.Substring(0, Application.dataPath.Length - "/Assets".Length), localPath);
+        return Path.Combine(Application.dataPath.Substring(0, Application.dataPath.Length - "/Assets".Length), localPath).Replace('\\', '/');
     }
     public static string ConvertGlobalPathToLocalPath(string globalPath)
     {
