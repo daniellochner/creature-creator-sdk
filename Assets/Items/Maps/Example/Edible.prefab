@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 5184126661831216021}
   - component: {fileID: 4600000039326349170}
   m_Layer: 0
-  m_Name: Food3
+  m_Name: Edible
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -155,7 +155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bb78bdba474240de957612db7643a69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modelId: acc1c44cca22c41ee9f5a8db74127b65
+  modelId: c31a1773d2eb94bbea2fd5ca3929a145
 --- !u!114 &5184126661831216021
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -168,7 +168,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b79f7cd61fabe4c58b2add3c51dfe7fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  diet: 1
+  diet: 0
   minMaxHunger: {x: 0.25, y: 0.5}
   minMaxHeal: {x: 15, y: 20}
 --- !u!114 &4600000039326349170
