@@ -6,6 +6,9 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using DanielLochner.CreatureCrafter.SDK;
+#if UNITY_NAVIGATION
+using Unity.AI.Navigation;
+#endif
 
 public static class MappingUtils
 {
@@ -158,6 +161,10 @@ public static class MappingUtils
                 sceneRoot.transform.SetParent(root.transform, true);
             }
 
+#if UNITY_NAVIGATION
+            UnpackNavMeshSurfaceInstances(root);
+#endif
+
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, prefabPath, out bool success);
             if (!success || prefab == null)
             {
@@ -167,6 +174,10 @@ public static class MappingUtils
                 }
                 ModdingUtils.ThrowError($"Failed to export the map as a prefab to '{prefabPath}'. Unity logged the reason to the Console just above this error.");
             }
+
+#if UNITY_NAVIGATION
+            VerifyNavMeshData(root, prefabPath);
+#endif
 
             if (!CustomMapValidator.IsMapPrefabValid(prefab, new HashSet<GameObject>(), out string error))
             {
@@ -375,6 +386,47 @@ public static class MappingUtils
 
         return buildAnyway;
     }
+
+#if UNITY_NAVIGATION
+    // A surface added to a prefab instance is stored as an override on it, and the export does not
+    // carry that over. This only touches the copy of the scene, which is deleted after the build.
+    private static void UnpackNavMeshSurfaceInstances(GameObject root)
+    {
+        foreach (NavMeshSurface surface in root.GetComponentsInChildren<NavMeshSurface>(true))
+        {
+            if (surface.navMeshData == null)
+            {
+                continue;
+            }
+
+            // Unpacking the outermost instance can leave the surface on a nested one.
+            for (int depth = 0; depth < 8 && PrefabUtility.IsPartOfPrefabInstance(surface.gameObject); depth++)
+            {
+                GameObject instanceRoot = PrefabUtility.GetOutermostPrefabInstanceRoot(surface.gameObject);
+                if (instanceRoot == null)
+                {
+                    break;
+                }
+
+                PrefabUtility.UnpackPrefabInstance(instanceRoot, PrefabUnpackMode.OutermostRoot, InteractionMode.AutomatedAction);
+            }
+        }
+    }
+
+    private static void VerifyNavMeshData(GameObject root, string prefabPath)
+    {
+        NavMeshSurface[] sourceSurfaces = root.GetComponentsInChildren<NavMeshSurface>(true);
+        NavMeshSurface[] exportedSurfaces = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath).GetComponentsInChildren<NavMeshSurface>(true);
+
+        for (int i = 0; i < sourceSurfaces.Length; i++)
+        {
+            if (sourceSurfaces[i].navMeshData != null && (i >= exportedSurfaces.Length || exportedSurfaces[i].navMeshData == null))
+            {
+                ModdingUtils.ThrowError($"The nav mesh baked onto '{GetHierarchyPath(sourceSurfaces[i].transform)}' could not be exported with the map.");
+            }
+        }
+    }
+#endif
 
     private static bool HasBakedSceneNavMesh(Scene scene)
     {
